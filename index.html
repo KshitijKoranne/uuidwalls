@@ -113,13 +113,7 @@ h1 em{font-style:italic;font-weight:400}
 }
 .btn-rand:hover{background:var(--p08);color:var(--paper);border-color:var(--p30)}
 
-.btn-render{
-  background:var(--paper);color:var(--ink);border:none;border-radius:var(--r6);
-  padding:11px 20px;font-family:var(--sans);font-size:13px;font-weight:500;
-  cursor:pointer;flex-shrink:0;white-space:nowrap;transition:opacity var(--ease),transform 0.1s
-}
-.btn-render:hover{opacity:0.88}
-.btn-render:active{transform:scale(0.97)}
+
 
 /* ACTION ROW */
 .action-row{
@@ -145,7 +139,7 @@ h1 em{font-style:italic;font-weight:400}
 .dl-menu{
   position:absolute;bottom:calc(100% + 6px);right:0;
   background:var(--ink2);border:1px solid var(--p15);border-radius:var(--r10);
-  padding:6px;min-width:160px;
+  padding:6px;min-width:200px;
   box-shadow:0 8px 32px rgba(0,0,0,0.6);
   display:none;z-index:50
 }
@@ -154,11 +148,58 @@ h1 em{font-style:italic;font-weight:400}
   display:flex;align-items:center;justify-content:space-between;
   padding:9px 12px;border-radius:var(--r6);cursor:pointer;
   font-family:var(--mono);font-size:10px;color:var(--p85);
-  transition:background var(--ease);gap:12px
+  transition:background var(--ease);gap:16px;white-space:nowrap
 }
 .dl-opt:hover{background:var(--p08)}
-.dl-opt-label{letter-spacing:0.04em}
-.dl-opt-dim{color:var(--p30);font-size:9px;letter-spacing:0.03em}
+.dl-opt-label{letter-spacing:0.04em;flex-shrink:0}
+.dl-opt-dim{color:var(--p30);font-size:9px;letter-spacing:0.03em;flex-shrink:0}
+
+/* PROGRESS BAR */
+#renderProgress{
+  display:none;position:fixed;inset:0;z-index:201;
+  background:rgba(10,9,8,0.82);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;flex-direction:column;gap:1.25rem
+}
+#renderProgress.show{display:flex}
+.prog-label{font-family:var(--mono);font-size:11px;color:var(--p85);letter-spacing:0.1em;text-align:center;line-height:1.6}
+.prog-bar-wrap{width:240px;height:2px;background:var(--p15);border-radius:2px;overflow:hidden}
+.prog-bar{height:100%;background:var(--paper);border-radius:2px;width:0%;transition:width 0.12s linear}
+.prog-note{font-family:var(--mono);font-size:9px;color:var(--p30);letter-spacing:0.08em}
+
+/* EXPLORE SECTION */
+#explore{background:var(--ink3)}
+.explore-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:10px;margin-bottom:1.5rem
+}
+.exp-card{
+  position:relative;border-radius:var(--r10);overflow:hidden;aspect-ratio:16/10;
+  cursor:pointer;background:var(--ink2);border:2px solid transparent;
+  transition:border-color var(--ease),transform var(--ease)
+}
+.exp-card:hover{border-color:var(--p30);transform:translateY(-2px)}
+.exp-card.selected{border-color:var(--paper)}
+.exp-card canvas{width:100%;height:100%;display:block}
+.exp-card-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(10,9,8,0.9));
+  padding:0.75rem 0.875rem 0.5rem;
+  display:flex;align-items:flex-end;justify-content:space-between
+}
+.exp-fam{font-family:var(--mono);font-size:9px;color:var(--p85);letter-spacing:0.06em}
+.exp-use{
+  font-family:var(--mono);font-size:8px;color:var(--p30);
+  background:var(--p08);border:1px solid var(--p15);border-radius:20px;
+  padding:3px 9px;transition:all var(--ease)
+}
+.exp-card:hover .exp-use,.exp-card.selected .exp-use{color:var(--paper);border-color:var(--p30)}
+.explore-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn-explore-more{
+  background:transparent;border:1px solid var(--p15);border-radius:var(--r6);
+  padding:11px 22px;font-family:var(--mono);font-size:11px;color:var(--p55);
+  cursor:pointer;transition:all var(--ease);letter-spacing:0.06em
+}
+.btn-explore-more:hover{background:var(--p08);color:var(--paper);border-color:var(--p30)}
 
 /* SCROLL HINT */
 .scroll-hint{
@@ -355,7 +396,6 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
       <div class="gen-row">
         <input id="uuidInput" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" maxlength="36" spellcheck="false" autocomplete="off">
         <button class="btn-rand" onclick="randomUUID()" title="Generate random UUID">↻ Random</button>
-        <button class="btn-render" onclick="onGenerate()">Render</button>
       </div>
 
       <div class="action-row">
@@ -528,6 +568,20 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
   </div>
 </section>
 
+<!-- EXPLORE -->
+<section id="explore">
+  <div class="s-inner">
+    <div class="s-eyebrow">Explore mode</div>
+    <h2 class="s-title fade-up">Not sure where to start?</h2>
+    <p class="s-sub fade-up">Generate six random walls at once. Click any to load it — or shuffle again until one feels like yours.</p>
+    <div class="explore-grid fade-up" id="exploreGrid"></div>
+    <div class="explore-actions fade-up">
+      <button class="btn-explore-more" onclick="shuffleExplore()">↻ Shuffle six new walls</button>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--p30);letter-spacing:0.06em">Click any wall to use it</span>
+    </div>
+  </div>
+</section>
+
 <!-- FAQ -->
 <section id="faq">
   <div class="s-inner">
@@ -589,8 +643,19 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
 
 <div id="toast">Copied</div>
 <div id="dlSpinner"><div class="spin-ring"></div><div class="spin-label">Rendering at full resolution…</div></div>
+<div id="renderProgress">
+  <div class="prog-label" id="progLabel">Building your wall…<br>This may take a moment.</div>
+  <div class="prog-bar-wrap"><div class="prog-bar" id="progBar"></div></div>
+  <div class="prog-note" id="progNote">0%</div>
+</div>
 
 <script>
+// ─── CONFIG ───
+// Chunked render: how many rows to draw per animation frame
+// Flow field and geometric are fast; Voronoi is the slow one.
+// Larger CHUNK = faster total but more jank per frame. 12 is a good balance.
+const CHUNK_ROWS=12;
+
 // ─── PRNG ───
 function mkPRNG(seed){
   let s=seed>>>0;if(!s)s=2463534242;
@@ -766,56 +831,173 @@ function drawASCII(canvas,P,w,h){
   }
 }
 
-function draw(canvas,P,w,h){
+function draw(canvas,P,w,h,onDone){
   if(!P)return;
-  ({flowfield:drawFlowField,voronoi:drawVoronoi,geometric:drawGeometric,ascii:drawASCII})[P.family](canvas,P,w,h)
+  // Geometric and ASCII are fast enough to run synchronously
+  // Flow field and Voronoi get chunked progressive rendering
+  if(P.family==='geometric'){drawGeometric(canvas,P,w,h);onDone&&onDone();return}
+  if(P.family==='ascii'){drawASCII(canvas,P,w,h);onDone&&onDone();return}
+  if(P.family==='flowfield'){drawFlowFieldChunked(canvas,P,w,h,onDone);return}
+  if(P.family==='voronoi'){drawVoronoiChunked(canvas,P,w,h,onDone);return}
+}
+
+// ─── CHUNKED FLOW FIELD ───
+function drawFlowFieldChunked(canvas,P,w,h,onDone){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,angle,mood,seed}=P;
+  const n=mkNoise(seed);
+  ctx.fillStyle=hsl(hue,sat*0.3,lum2*0.5);ctx.fillRect(0,0,w,h);
+  const step=Math.max(5,16-density*12);
+  const iters=Math.floor(50+mood*90);
+  const sc=0.0022+density*0.002;
+  ctx.lineWidth=0.7+(1-mood)*1.5;ctx.lineCap='round';
+
+  const xs=[];
+  for(let x=0;x<w;x+=step)xs.push(x);
+  let xi=0;
+
+  function chunk(){
+    const end=Math.min(xi+CHUNK_ROWS,xs.length);
+    for(let i=xi;i<end;i++){
+      const x=xs[i];
+      for(let y=0;y<h;y+=step){
+        let cx=x+(Math.random()-.5)*step*.4,cy=y+(Math.random()-.5)*step*.4;
+        const isAcc=((x/step|0)+(y/step|0))%9===0;
+        const lh=isAcc?accent:hue+(n(x*.001,y*.001)*28);
+        const lm=lum2+(lum1-lum2)*(x/w*.5+y/h*.5);
+        ctx.globalAlpha=0.4+mood*0.45;ctx.strokeStyle=hsl(lh,sat,lm);
+        ctx.beginPath();ctx.moveTo(cx,cy);
+        for(let k=0;k<iters;k++){
+          const v=n(cx*sc,cy*sc)*Math.PI*4+angle;
+          cx+=Math.cos(v)*2.2;cy+=Math.sin(v)*2.2;
+          if(cx<0||cx>w||cy<0||cy>h)break;
+          ctx.lineTo(cx,cy)
+        }
+        ctx.stroke()
+      }
+    }
+    ctx.globalAlpha=1;
+    xi=end;
+    setProgress(xi/xs.length);
+    if(xi<xs.length)requestAnimationFrame(chunk);
+    else onDone&&onDone()
+  }
+  requestAnimationFrame(chunk)
+}
+
+// ─── CHUNKED VORONOI ───
+function drawVoronoiChunked(canvas,P,w,h,onDone){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,mood,seed}=P;
+  const rng=mkPRNG(seed);
+  const count=Math.floor(10+density*35);
+  const pts=Array.from({length:count},()=>({x:rng()*w,y:rng()*h}));
+  const cols=pts.map((_,i)=>hslRgb(i%5===0?accent:hue+(i%4)*18,sat,lum2+(i/count)*(lum1-lum2)));
+  const img=ctx.createImageData(w,h);const d=img.data;
+  const pxStep=Math.max(2,w/240|0);
+  const totalRows=Math.ceil(h/pxStep);
+  let row=0;
+
+  function chunk(){
+    const endRow=Math.min(row+CHUNK_ROWS*2,totalRows);
+    for(let ri=row;ri<endRow;ri++){
+      const py=ri*pxStep;
+      for(let px=0;px<w;px+=pxStep){
+        let d1=Infinity,d2=Infinity,cl=0;
+        for(let k=0;k<pts.length;k++){
+          const dx=px-pts[k].x,dy=py-pts[k].y,dist=dx*dx+dy*dy;
+          if(dist<d1){d2=d1;d1=dist;cl=k}else if(dist<d2)d2=dist
+        }
+        const edge=Math.min(1,(Math.sqrt(d2)-Math.sqrt(d1))*.1);
+        const[r,g,b]=cols[cl];const f=mood*.5+.5;
+        const rv=Math.min(255,r*f+edge*28|0),gv=Math.min(255,g*f+edge*28|0),bv=Math.min(255,b*f+edge*28|0);
+        for(let dy2=0;dy2<pxStep&&py+dy2<h;dy2++)
+          for(let dx2=0;dx2<pxStep&&px+dx2<w;dx2++){
+            const idx=((py+dy2)*w+(px+dx2))*4;d[idx]=rv;d[idx+1]=gv;d[idx+2]=bv;d[idx+3]=255
+          }
+      }
+    }
+    ctx.putImageData(img,0,0);
+    row=endRow;
+    setProgress(row/totalRows);
+    if(row<totalRows)requestAnimationFrame(chunk);
+    else{
+      for(const pt of pts){ctx.beginPath();ctx.arc(pt.x,pt.y,1.5,0,Math.PI*2);ctx.fillStyle=hsl(accent,sat,lum1,.8);ctx.fill()}
+      onDone&&onDone()
+    }
+  }
+  requestAnimationFrame(chunk)
+}
+
+// ─── PROGRESS ───
+function setProgress(ratio){
+  const bar=document.getElementById('progBar');
+  const note=document.getElementById('progNote');
+  if(bar)bar.style.width=(ratio*100).toFixed(0)+'%';
+  if(note)note.textContent=(ratio*100).toFixed(0)+'%'
+}
+
+function showProgress(label){
+  setProgress(0);
+  document.getElementById('progLabel').innerHTML=label+'<br><span style="font-size:9px;opacity:0.5">This may take a moment</span>';
+  document.getElementById('renderProgress').classList.add('show')
+}
+
+function hideProgress(){
+  document.getElementById('renderProgress').classList.remove('show');
+  setProgress(0)
 }
 
 // ─── STATE ───
 const HERO_UUID='f47ac10b-58cc-4372-a567-0e02b2c3d479';
 let curUUID=HERO_UUID,curFamily='flowfield';
+let renderToken=0; // cancel stale renders
 
 const FAM_LABEL={flowfield:'Flow Field',voronoi:'Voronoi',geometric:'Geometric',ascii:'ASCII'};
 
-function applyHero(uuid,family){
+function applyHero(uuid,family,showProg){
   curUUID=uuid;curFamily=family;
+  renderToken++;
+  const myToken=renderToken;
+
   document.querySelectorAll('.pat-btn').forEach(b=>b.classList.toggle('active',b.dataset.family===family));
-  document.getElementById('metaText').textContent=`${FAM_LABEL[family]} · rendering`;
+  document.getElementById('metaText').textContent=`${FAM_LABEL[family]} · rendering…`;
+
   const c=document.getElementById('wallCanvas');
   const dpr=window.devicePixelRatio||1;
   const w=window.innerWidth,h=window.innerHeight;
   c.style.width=w+'px';c.style.height=h+'px';
-  draw(c,parseUUID(uuid,family),w*dpr,h*dpr);
-  ctx_scale(c,dpr);
-  setTimeout(()=>document.getElementById('metaText').textContent='Live · rendering',500)
+
+  const slow=(family==='voronoi'||family==='flowfield');
+  if(showProg&&slow)showProgress(`Building your ${FAM_LABEL[family]}…`);
+
+  draw(c,parseUUID(uuid,family),w*dpr,h*dpr,()=>{
+    if(myToken!==renderToken)return; // stale
+    if(showProg&&slow)hideProgress();
+    document.getElementById('metaText').textContent='Live · rendering'
+  })
 }
 
-// scale canvas display
-function ctx_scale(canvas,dpr){
-  // canvas already drawn at physical pixels via width/height
-  // CSS size already set — nothing more needed here
-}
-
-function onGenerate(){
-  const v=document.getElementById('uuidInput').value.trim();
-  if(v)applyHero(v,curFamily)
-}
-
-function randomUUID(){
-  const u='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16)});
-  document.getElementById('uuidInput').value=u;
-  applyHero(u,curFamily)
-}
+// ─── INPUT — debounced live update ───
+let debTimer;
+document.getElementById('uuidInput').addEventListener('input',function(){
+  clearTimeout(debTimer);
+  const val=this.value;
+  if(val.replace(/-/g,'').length<8)return;
+  debTimer=setTimeout(()=>applyHero(val,curFamily,false),420) // no progress for live typing
+});
 
 document.getElementById('patternSwitcher').addEventListener('click',e=>{
   const b=e.target.closest('.pat-btn');if(!b)return;
   curFamily=b.dataset.family;
-  applyHero(curUUID,curFamily)
+  applyHero(curUUID,curFamily,true)
 });
-document.getElementById('uuidInput').addEventListener('input',function(){
-  if(this.value.replace(/-/g,'').length>=8)applyHero(this.value,curFamily)
-});
-document.getElementById('uuidInput').addEventListener('keydown',e=>{if(e.key==='Enter')onGenerate()});
+
+function randomUUID(){
+  const u='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16)});
+  document.getElementById('uuidInput').value=u;
+  applyHero(u,curFamily,true)
+}
 
 // ─── DOWNLOAD ───
 const DL_SIZES={
@@ -829,9 +1011,8 @@ function toggleDlMenu(e){
   e.stopPropagation();
   const m=document.getElementById('dlMenu');
   m.classList.toggle('open');
-  // update screen res label
   const dpr=window.devicePixelRatio||1;
-  document.getElementById('dimScreen').textContent=`${window.innerWidth*dpr|0} × ${window.innerHeight*dpr|0}`;
+  document.getElementById('dimScreen').textContent=`${window.innerWidth*dpr|0}×${window.innerHeight*dpr|0}`;
 }
 document.addEventListener('click',()=>document.getElementById('dlMenu').classList.remove('open'));
 
@@ -841,23 +1022,23 @@ function downloadWall(sizeKey){
   const spinner=document.getElementById('dlSpinner');
   spinner.classList.add('show');
 
-  // use requestAnimationFrame so spinner renders first
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     const offscreen=document.createElement('canvas');
     const P=parseUUID(curUUID,curFamily);
     try{
-      draw(offscreen,P,w,h);
-      offscreen.toBlob(blob=>{
-        spinner.classList.remove('show');
-        if(!blob){showToast('Could not generate image');return}
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a');
-        a.href=url;
-        a.download=`uuidwalls-${curUUID.slice(0,8)}-${curFamily}-${sizeKey}.png`;
-        a.click();
-        setTimeout(()=>URL.revokeObjectURL(url),3000);
-        showToast(`Downloading ${w}×${h}`)
-      },'image/png');
+      draw(offscreen,P,w,h,()=>{
+        offscreen.toBlob(blob=>{
+          spinner.classList.remove('show');
+          if(!blob){showToast('Could not generate image');return}
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement('a');
+          a.href=url;
+          a.download=`uuidwalls-${curUUID.slice(0,8)}-${curFamily}-${sizeKey}.png`;
+          a.click();
+          setTimeout(()=>URL.revokeObjectURL(url),3000);
+          showToast(`Downloading ${w}×${h}`)
+        },'image/png')
+      })
     }catch(err){
       spinner.classList.remove('show');
       showToast('Render failed — try a smaller size')
@@ -879,14 +1060,14 @@ function renderShowcase(){
     const par=canvas.parentElement;
     const w=Math.max(par.offsetWidth,280),h=Math.max(par.offsetHeight,210);
     const d=SC[i];
-    draw(canvas,{...parseUUID(d.uuid),...d.pal,family:d.fam,seed:uuidSeed(d.uuid)},w,h)
+    draw(canvas,{...parseUUID(d.uuid),...d.pal,family:d.fam,seed:uuidSeed(d.uuid)},w,h,null)
   })
 }
 
 function applyShowcase(fam){
   curFamily=fam;
   document.querySelectorAll('.pat-btn').forEach(b=>b.classList.toggle('active',b.dataset.family===fam));
-  applyHero(curUUID,fam);
+  applyHero(curUUID,fam,true);
   scrollToTop()
 }
 
@@ -916,13 +1097,13 @@ function mkGalleryCard(data){
   document.getElementById('galleryGrid').appendChild(card);
   setTimeout(()=>{
     const w=Math.max(card.offsetWidth,220),h=Math.max(card.offsetHeight,140);
-    draw(canvas,{...parseUUID(data.uuid),...data.pal,family:data.fam,seed:uuidSeed(data.uuid)},w,h)
+    draw(canvas,{...parseUUID(data.uuid),...data.pal,family:data.fam,seed:uuidSeed(data.uuid)},w,h,null)
   },40)
 }
 
 function loadCard(data){
   document.getElementById('uuidInput').value=data.uuid;
-  applyHero(data.uuid,data.fam);scrollToTop()
+  applyHero(data.uuid,data.fam,true);scrollToTop()
 }
 
 function loadMoreGallery(){
@@ -931,12 +1112,44 @@ function loadMoreGallery(){
   if(gLoaded>=GDATA.length)document.querySelector('#gallery .btn-lg-ghost').style.display='none'
 }
 
+// ─── EXPLORE MODE ───
+const FAMS=['flowfield','voronoi','geometric','ascii'];
+
+function mkExpCard(uuid,fam){
+  const card=document.createElement('div');card.className='exp-card';
+  const canvas=document.createElement('canvas');card.appendChild(canvas);
+  const lbl=document.createElement('div');lbl.className='exp-card-label';
+  lbl.innerHTML=`<span class="exp-fam">${FAM_LABEL[fam]}</span><span class="exp-use">Use this</span>`;
+  card.appendChild(lbl);
+  card.onclick=()=>{
+    document.querySelectorAll('.exp-card').forEach(c=>c.classList.remove('selected'));
+    card.classList.add('selected');
+    document.getElementById('uuidInput').value=uuid;
+    applyHero(uuid,fam,true);scrollToTop()
+  };
+  document.getElementById('exploreGrid').appendChild(card);
+  setTimeout(()=>{
+    const w=Math.max(card.offsetWidth,240),h=Math.max(card.offsetHeight,150);
+    draw(canvas,parseUUID(uuid,fam),w,h,null)
+  },60);
+  return card
+}
+
+function shuffleExplore(){
+  document.getElementById('exploreGrid').innerHTML='';
+  for(let i=0;i<6;i++){
+    const uuid='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16)});
+    const fam=FAMS[Math.floor(Math.random()*FAMS.length)];
+    mkExpCard(uuid,fam)
+  }
+}
+
 // ─── CTA CANVAS ───
 function renderCTA(){
   const c=document.getElementById('ctaCanvas');
   const sec=document.getElementById('cta-sec');
   draw(c,{...parseUUID('deadbeef-cafe-4abe-b00d-123456789abc'),family:'flowfield',hue:38,sat:55,lum1:72,lum2:18,accent:200,seed:uuidSeed('deadbeef')},
-    sec.offsetWidth||900,sec.offsetHeight||500)
+    sec.offsetWidth||900,sec.offsetHeight||500,null)
 }
 
 // ─── SHARE ───
@@ -951,7 +1164,6 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),2400)
 }
 
-// ─── SCROLL ───
 function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
 
 // ─── OBSERVER ───
@@ -964,16 +1176,17 @@ function initObs(){
 let rTimer;
 window.addEventListener('resize',()=>{
   clearTimeout(rTimer);
-  rTimer=setTimeout(()=>applyHero(curUUID,curFamily),250)
+  rTimer=setTimeout(()=>applyHero(curUUID,curFamily,false),300)
 });
 
 // ─── INIT ───
 window.addEventListener('load',()=>{
   document.getElementById('uuidInput').value=HERO_UUID;
-  applyHero(HERO_UUID,'flowfield');
-  setTimeout(renderShowcase,100);
+  applyHero(HERO_UUID,'flowfield',false);
+  setTimeout(renderShowcase,120);
   loadMoreGallery();
-  setTimeout(renderCTA,200);
+  shuffleExplore();
+  setTimeout(renderCTA,250);
   initObs()
 });
 </script>
