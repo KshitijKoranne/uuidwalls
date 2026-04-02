@@ -9,14 +9,14 @@
 <meta name="description" content="UUIDWalls converts your device's UUID into a one-of-a-kind generative wallpaper. Deterministic, private, and works on Mac, Windows, Linux, iPhone, and Android. No two machines look alike.">
 <meta name="keywords" content="UUID wallpaper, generative wallpaper, device wallpaper, unique wallpaper generator, procedural art, flow field wallpaper, voronoi wallpaper, mac wallpaper, custom wallpaper">
 <meta name="author" content="KJR Labs">
-<link rel="canonical" href="https://uuidwalls.com/">
+<link rel="canonical" href="https://uuidwalls.vercel.app/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://uuidwalls.com/">
+<meta property="og:url" content="https://uuidwalls.vercel.app/">
 <meta property="og:title" content="UUIDWalls — Your Device Has a Face">
 <meta property="og:description" content="Every device carries a UUID shared with no machine on earth. We render it into a generative wallpaper that is mathematically, permanently yours.">
-<meta property="og:image" content="https://uuidwalls.com/og-image.jpg">
+<meta property="og:image" content="https://uuidwalls.vercel.app/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -27,7 +27,7 @@
 <meta name="twitter:site" content="@kjrlabs">
 <meta name="twitter:title" content="UUIDWalls — Your Device Has a Face">
 <meta name="twitter:description" content="Turn your device's UUID into a unique generative wallpaper. Deterministic. Private. Yours forever.">
-<meta name="twitter:image" content="https://uuidwalls.com/og-image.jpg">
+<meta name="twitter:image" content="https://uuidwalls.vercel.app/og-image.jpg">
 
 <!-- Structured Data -->
 <script type="application/ld+json">
@@ -35,7 +35,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "UUIDWalls",
-  "url": "https://uuidwalls.com",
+  "url": "https://uuidwalls.vercel.app",
   "description": "Generative wallpaper renderer that converts device UUIDs into unique, deterministic visual patterns.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Any",
@@ -1308,8 +1308,7 @@ function renderCTA(){
 
 // ─── SHARE ───
 function shareOnX(){
-  const fam=FAM_LABEL[curFamily];
-  const txt=`Every UUID generates a unique wall. Mine is a ${fam} — no other machine on earth renders the same one.\n\nGenerate yours → uuidwalls.com`;
+  const txt=`Every device has a UUID no other machine on earth shares.\n\nMine generates a wall that belongs to no one else — mathematically, permanently.\n\nWhat does yours look like? → https://uuidwalls.vercel.app`;
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`,'_blank','noopener')
 }
 
