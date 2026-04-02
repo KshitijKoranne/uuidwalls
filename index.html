@@ -3,8 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UUIDWalls — Your Identity, Rendered</title>
-<meta name="description" content="Turn any UUID into a one-of-a-kind generative wallpaper. Works on every device. No two alike.">
+
+<!-- Primary SEO -->
+<title>UUIDWalls — Turn Your Device UUID Into a Unique Generative Wallpaper</title>
+<meta name="description" content="UUIDWalls converts your device's UUID into a one-of-a-kind generative wallpaper. Deterministic, private, and works on Mac, Windows, Linux, iPhone, and Android. No two machines look alike.">
+<meta name="keywords" content="UUID wallpaper, generative wallpaper, device wallpaper, unique wallpaper generator, procedural art, flow field wallpaper, voronoi wallpaper, mac wallpaper, custom wallpaper">
+<meta name="author" content="KJR Labs">
+<link rel="canonical" href="https://uuidwalls.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://uuidwalls.com/">
+<meta property="og:title" content="UUIDWalls — Your Device Has a Face">
+<meta property="og:description" content="Every device carries a UUID shared with no machine on earth. We render it into a generative wallpaper that is mathematically, permanently yours.">
+<meta property="og:image" content="https://uuidwalls.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="UUIDWalls">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@kjrlabs">
+<meta name="twitter:title" content="UUIDWalls — Your Device Has a Face">
+<meta name="twitter:description" content="Turn your device's UUID into a unique generative wallpaper. Deterministic. Private. Yours forever.">
+<meta name="twitter:image" content="https://uuidwalls.com/og-image.png">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "UUIDWalls",
+  "url": "https://uuidwalls.com",
+  "description": "Generative wallpaper renderer that converts device UUIDs into unique, deterministic visual patterns.",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "creator": {"@type": "Organization", "name": "KJR Labs", "url": "https://kjrlabs.in"}
+}
+</script>
+
+<!-- Favicon — SVG inline icon, UUID-inspired geometric -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230a0908'/><polygon points='16,4 28,10 28,22 16,28 4,22 4,10' fill='none' stroke='%23f0ede8' stroke-width='1.2'/><polygon points='16,9 23,13 23,19 16,23 9,19 9,13' fill='%23f0ede8' opacity='0.18'/><circle cx='16' cy='16' r='2.5' fill='%23f0ede8'/><line x1='16' y1='4' x2='16' y2='9' stroke='%23f0ede8' stroke-width='1'/><line x1='28' y1='10' x2='23' y2='13' stroke='%23f0ede8' stroke-width='1'/><line x1='28' y1='22' x2='23' y2='19' stroke='%23f0ede8' stroke-width='1'/><line x1='16' y1='28' x2='16' y2='23' stroke='%23f0ede8' stroke-width='1'/><line x1='4' y1='22' x2='9' y2='19' stroke='%23f0ede8' stroke-width='1'/><line x1='4' y1='10' x2='9' y2='13' stroke='%23f0ede8' stroke-width='1'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230a0908'/><polygon points='90,20 156,55 156,125 90,160 24,125 24,55' fill='none' stroke='%23f0ede8' stroke-width='6'/><polygon points='90,50 126,70 126,110 90,130 54,110 54,70' fill='%23f0ede8' opacity='0.15'/><circle cx='90' cy='90' r='14' fill='%23f0ede8'/><line x1='90' y1='20' x2='90' y2='50' stroke='%23f0ede8' stroke-width='5'/><line x1='156' y1='55' x2='126' y2='70' stroke='%23f0ede8' stroke-width='5'/><line x1='156' y1='125' x2='126' y2='110' stroke='%23f0ede8' stroke-width='5'/><line x1='90' y1='160' x2='90' y2='130' stroke='%23f0ede8' stroke-width='5'/><line x1='24' y1='125' x2='54' y2='110' stroke='%23f0ede8' stroke-width='5'/><line x1='24' y1='55' x2='54' y2='70' stroke='%23f0ede8' stroke-width='5'/></svg>">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -43,8 +85,7 @@ nav{
 .nav-links{display:flex;gap:2rem}
 .nav-links a{font-size:13px;color:var(--p55);text-decoration:none;letter-spacing:0.02em;transition:color var(--ease)}
 .nav-links a:hover{color:var(--paper)}
-.nav-btn{background:var(--paper);color:var(--ink);border:none;border-radius:var(--r6);padding:8px 18px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:opacity var(--ease)}
-.nav-btn:hover{opacity:0.85}
+
 @media(max-width:640px){.nav-links{display:none}}
 
 /* HERO */
@@ -231,9 +272,11 @@ section{padding:7rem 1.5rem}
 /* SHOWCASE */
 #showcase{background:var(--ink)}
 .showcase-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  display:grid;grid-template-columns:repeat(3,1fr);
   gap:1px;background:var(--p08);border:1px solid var(--p08);border-radius:var(--r14);overflow:hidden
 }
+@media(max-width:700px){.showcase-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:440px){.showcase-grid{grid-template-columns:1fr}}
 .s-card{position:relative;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:var(--ink2)}
 .s-card canvas{width:100%;height:100%;display:block;transition:transform 0.6s ease}
 .s-card:hover canvas{transform:scale(1.04)}
@@ -248,22 +291,25 @@ section{padding:7rem 1.5rem}
 /* DEVICES SECTION */
 #devices{background:var(--ink2)}
 .devices-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
   background:var(--p08);border:1px solid var(--p08);border-radius:var(--r14);overflow:hidden;
   margin-bottom:2.5rem
 }
-.dev-item{background:var(--ink2);padding:1.75rem 1.5rem;text-align:center}
-.dev-icon{font-size:2rem;margin-bottom:0.875rem;display:block}
-.dev-name{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--paper);margin-bottom:4px}
-.dev-where{font-family:var(--mono);font-size:9px;color:var(--p55);letter-spacing:0.06em;line-height:1.6}
+@media(max-width:700px){.devices-grid{grid-template-columns:repeat(2,1fr)}}
+.dev-item{background:var(--ink2);padding:1.75rem 1.5rem}
+.dev-os{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--p30);margin-bottom:0.5rem
+}
+.dev-name{font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--paper);margin-bottom:0.5rem}
+.dev-where{font-family:var(--mono);font-size:9px;color:var(--p55);letter-spacing:0.04em;line-height:1.7}
 .res-note{
   background:var(--p05);border:1px solid var(--p08);border-radius:var(--r10);
-  padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap
+  padding:1.5rem 1.75rem
 }
-.res-note-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px}
-.res-note-body{flex:1;min-width:200px}
-.res-note-title{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--paper);margin-bottom:4px}
-.res-note-text{font-size:0.875rem;font-weight:300;color:var(--p85);line-height:1.7}
+.res-note-body{width:100%}
+.res-note-title{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--paper);margin-bottom:6px}
+.res-note-text{font-size:0.875rem;font-weight:300;color:var(--p85);line-height:1.75;max-width:680px}
 
 /* GALLERY */
 #gallery{background:var(--ink)}
@@ -324,7 +370,7 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
 .footer-links{display:flex;gap:1.5rem}
 .footer-links a{font-family:var(--mono);font-size:10px;color:var(--p30);text-decoration:none;letter-spacing:0.06em;transition:color var(--ease)}
 .footer-links a:hover{color:var(--paper)}
-.footer-copy{font-family:var(--mono);font-size:10px;color:rgba(240,237,232,0.18);letter-spacing:0.04em}
+.footer-copy{font-family:var(--mono);font-size:10px;color:var(--p55);letter-spacing:0.04em}
 
 /* TOAST */
 #toast{
@@ -371,7 +417,6 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
     <a href="#devices">Devices</a>
     <a href="#gallery">Gallery</a>
   </div>
-  <button class="nav-btn" onclick="scrollToTop()">Try it free</button>
 </nav>
 
 <!-- HERO -->
@@ -391,6 +436,8 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
         <button class="pat-btn" data-family="voronoi">Voronoi</button>
         <button class="pat-btn" data-family="geometric">Geometric</button>
         <button class="pat-btn" data-family="ascii">ASCII</button>
+        <button class="pat-btn" data-family="mandala">Mandala</button>
+        <button class="pat-btn" data-family="wave">Wave</button>
       </div>
 
       <div class="gen-row">
@@ -483,9 +530,9 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
 <!-- PATTERN SHOWCASE -->
 <section id="showcase">
   <div class="s-inner">
-    <div class="s-eyebrow">Four pattern families</div>
-    <h2 class="s-title fade-up">One UUID. Four expressions.</h2>
-    <p class="s-sub fade-up">Your UUID picks a pattern — or you choose. The same identity expressed in four different visual languages.</p>
+    <div class="s-eyebrow">Six pattern families</div>
+    <h2 class="s-title fade-up">One UUID. Six expressions.</h2>
+    <p class="s-sub fade-up">Your UUID picks a pattern — or you choose. The same identity expressed through six distinct visual languages.</p>
     <div class="showcase-grid fade-up">
       <div class="s-card" onclick="applyShowcase('flowfield')">
         <canvas id="pc1"></canvas>
@@ -503,6 +550,14 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
         <canvas id="pc4"></canvas>
         <div class="s-card-ov"><h4>ASCII</h4><p>Character density fields · Terminal origins</p></div>
       </div>
+      <div class="s-card" onclick="applyShowcase('mandala')">
+        <canvas id="pc5"></canvas>
+        <div class="s-card-ov"><h4>Mandala</h4><p>Radial symmetry · Concentric geometry</p></div>
+      </div>
+      <div class="s-card" onclick="applyShowcase('wave')">
+        <canvas id="pc6"></canvas>
+        <div class="s-card-ov"><h4>Wave</h4><p>Sine interference · Harmonic fields</p></div>
+      </div>
     </div>
   </div>
 </section>
@@ -512,44 +567,53 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
   <div class="s-inner">
     <div class="s-eyebrow">Universal</div>
     <h2 class="s-title fade-up">Works on every screen</h2>
-    <p class="s-sub fade-up">UUIDWalls is not a Mac app. It's not a Windows app. It's a universal identity renderer — any device that has a UUID can have a wall.</p>
+    <p class="s-sub fade-up">UUIDWalls is not a Mac app. It's not a Windows app. It's a universal identity renderer — any device with a UUID can have a wall.</p>
     <div class="devices-grid fade-up">
       <div class="dev-item">
-        <span class="dev-icon">💻</span>
+        <div class="dev-os">macOS</div>
         <div class="dev-name">Mac</div>
         <div class="dev-where">System Settings → General → About → Hardware UUID</div>
       </div>
       <div class="dev-item">
-        <span class="dev-icon">🖥️</span>
-        <div class="dev-name">Windows</div>
-        <div class="dev-where">Run: <code style="font-family:var(--mono);font-size:9px">wmic csproduct get UUID</code></div>
+        <div class="dev-os">Windows</div>
+        <div class="dev-name">PC</div>
+        <div class="dev-where">Command Prompt:<br><code style="font-family:var(--mono);font-size:9px;background:var(--p08);padding:2px 5px;border-radius:3px">wmic csproduct get UUID</code></div>
       </div>
       <div class="dev-item">
-        <span class="dev-icon">🐧</span>
+        <div class="dev-os">Linux</div>
         <div class="dev-name">Linux</div>
-        <div class="dev-where"><code style="font-family:var(--mono);font-size:9px">cat /etc/machine-id</code></div>
+        <div class="dev-where">Terminal:<br><code style="font-family:var(--mono);font-size:9px;background:var(--p08);padding:2px 5px;border-radius:3px">cat /etc/machine-id</code></div>
       </div>
       <div class="dev-item">
-        <span class="dev-icon">📱</span>
+        <div class="dev-os">iOS</div>
         <div class="dev-name">iPhone</div>
-        <div class="dev-where">Settings → General → About → scroll to find UUID</div>
+        <div class="dev-where">Settings → General → About → scroll down to UUID</div>
       </div>
       <div class="dev-item">
-        <span class="dev-icon">🤖</span>
+        <div class="dev-os">Android</div>
         <div class="dev-name">Android</div>
         <div class="dev-where">Settings → About phone → Status → Android ID</div>
       </div>
       <div class="dev-item">
-        <span class="dev-icon">⌚</span>
+        <div class="dev-os">iPadOS</div>
+        <div class="dev-name">iPad</div>
+        <div class="dev-where">Settings → General → About → scroll down to UUID</div>
+      </div>
+      <div class="dev-item">
+        <div class="dev-os">Any platform</div>
+        <div class="dev-name">Server</div>
+        <div class="dev-where">Use hostname, instance ID, or any unique system identifier</div>
+      </div>
+      <div class="dev-item">
+        <div class="dev-os">No device needed</div>
         <div class="dev-name">Anything</div>
-        <div class="dev-where">Any UUID or unique ID works as a seed — serial numbers, account IDs, even your name</div>
+        <div class="dev-where">Any string works — a name, a word, a serial number. Type it and render.</div>
       </div>
     </div>
     <div class="res-note fade-up">
-      <span class="res-note-icon">📐</span>
       <div class="res-note-body">
         <div class="res-note-title">Resolution you can actually use</div>
-        <div class="res-note-text">Downloads are rendered at full physical pixel resolution — not just your screen size. The 4K export is 3840 × 2160 pixels: sharp on every Retina, OLED, and 4K display. Mobile export is 1290 × 2796 — Pro iPhone native. All rendering happens locally in your browser.</div>
+        <div class="res-note-text">Downloads render at full physical pixel resolution — not just your CSS screen size. 4K exports at 3840×2160, sharp on every Retina, OLED, and 4K display. Mobile exports at 1290×2796, iPhone Pro native. All rendering happens locally in your browser. Nothing is sent to a server.</div>
       </div>
     </div>
   </div>
@@ -636,7 +700,7 @@ footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;displa
   <div class="footer-links">
     <a href="#how">How it works</a>
     <a href="#gallery">Gallery</a>
-    <a href="mailto:hello@uuidwalls.com">Contact</a>
+    <a href="mailto:kjrlabs9@gmail.com">Contact</a>
   </div>
   <div class="footer-copy">Deterministic · Private · Universal</div>
 </footer>
@@ -670,8 +734,8 @@ function uuidSeed(uuid){
 function parseUUID(uuid,forceFamily){
   const clean=uuid.trim().replace(/-/g,'').toLowerCase().replace(/[^0-9a-f]/g,'').padEnd(32,'0').slice(0,32);
   const s=(o,l)=>parseInt(clean.slice(o,o+l),16)||0;
-  const fams=['flowfield','voronoi','geometric','ascii'];
-  const fi=forceFamily?fams.indexOf(forceFamily):s(0,4)%4;
+  const fams=['flowfield','voronoi','geometric','ascii','mandala','wave'];
+  const fi=forceFamily?fams.indexOf(forceFamily):s(0,4)%6;
   return{
     family:fams[Math.max(0,fi)],
     hue:s(4,4)%360,
@@ -831,12 +895,99 @@ function drawASCII(canvas,P,w,h){
   }
 }
 
+function drawMandala(canvas,P,w,h){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,mood,seed}=P;
+  const rng=mkPRNG(seed);
+  ctx.fillStyle=hsl(hue,sat*0.25,lum2*0.45);ctx.fillRect(0,0,w,h);
+  const cx=w/2,cy=h/2;
+  const rings=Math.floor(5+density*10);
+  const spokeBase=Math.floor(6+rng()*6)*2; // even number for symmetry
+  const maxR=Math.min(w,h)*0.48;
+  for(let ring=rings;ring>=1;ring--){
+    const r=maxR*(ring/rings);
+    const spokes=spokeBase+(ring%3===0?spokeBase:0);
+    const t=ring/rings;
+    const isAccRing=ring%3===0;
+    const ringHue=isAccRing?accent:hue+(ring*12);
+    const lm=lum2+(lum1-lum2)*(1-t);
+    for(let s=0;s<spokes;s++){
+      const a0=s*(Math.PI*2/spokes);
+      const a1=(s+0.5)*(Math.PI*2/spokes);
+      const r0=r*(0.55+mood*0.1);
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(a0)*r0,cy+Math.sin(a0)*r0);
+      ctx.lineTo(cx+Math.cos(a0)*r,cy+Math.sin(a0)*r);
+      ctx.arc(cx,cy,r,a0,a1);
+      ctx.closePath();
+      ctx.fillStyle=hsl(ringHue,sat,lm,0.3+t*0.45);
+      ctx.fill();
+      // petal stroke
+      ctx.strokeStyle=hsl(ringHue,sat,lum1,0.15+t*0.2);
+      ctx.lineWidth=0.5;ctx.stroke()
+    }
+    // ring line
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle=hsl(ringHue,sat*0.5,lum1,0.12);
+    ctx.lineWidth=0.5;ctx.stroke()
+  }
+  // centre dot
+  ctx.beginPath();ctx.arc(cx,cy,maxR*0.025,0,Math.PI*2);
+  ctx.fillStyle=hsl(accent,sat,lum1,0.9);ctx.fill()
+}
+
+function drawWave(canvas,P,w,h){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,angle,mood,seed}=P;
+  const rng=mkPRNG(seed);
+  ctx.fillStyle=hsl(hue,sat*0.28,lum2*0.5);ctx.fillRect(0,0,w,h);
+  const bands=Math.floor(6+density*16);
+  const freq1=0.004+rng()*0.008;
+  const freq2=0.003+rng()*0.006;
+  const freq3=0.005+rng()*0.004;
+  const amp=h/(bands*1.8);
+  const bandH=h/bands;
+  for(let b=0;b<bands;b++){
+    const t=b/bands;
+    const isAcc=b%4===0;
+    const bHue=isAcc?accent:hue+(b*15)%60-30;
+    const lm=lum2+(lum1-lum2)*t;
+    const yBase=b*bandH;
+    ctx.beginPath();
+    ctx.moveTo(0,yBase);
+    for(let x=0;x<=w;x+=2){
+      const phase=angle+b*0.7;
+      const y=yBase+Math.sin(x*freq1+phase)*amp
+                   +Math.sin(x*freq2+phase*1.3)*amp*0.5
+                   +Math.sin(x*freq3+phase*0.7)*amp*0.25;
+      ctx.lineTo(x,y)
+    }
+    ctx.lineTo(w,yBase+bandH*2);
+    ctx.lineTo(0,yBase+bandH*2);
+    ctx.closePath();
+    ctx.fillStyle=hsl(bHue,sat,lm,0.35+mood*0.35);
+    ctx.fill();
+    // wave line
+    ctx.beginPath();
+    ctx.moveTo(0,yBase);
+    for(let x=0;x<=w;x+=2){
+      const phase=angle+b*0.7;
+      const y=yBase+Math.sin(x*freq1+phase)*amp
+                   +Math.sin(x*freq2+phase*1.3)*amp*0.5
+                   +Math.sin(x*freq3+phase*0.7)*amp*0.25;
+      ctx.lineTo(x,y)
+    }
+    ctx.strokeStyle=hsl(bHue,sat,lum1,0.3+t*0.3);
+    ctx.lineWidth=1+mood;ctx.stroke()
+  }
+}
+
 function draw(canvas,P,w,h,onDone){
   if(!P)return;
-  // Geometric and ASCII are fast enough to run synchronously
-  // Flow field and Voronoi get chunked progressive rendering
   if(P.family==='geometric'){drawGeometric(canvas,P,w,h);onDone&&onDone();return}
   if(P.family==='ascii'){drawASCII(canvas,P,w,h);onDone&&onDone();return}
+  if(P.family==='mandala'){drawMandala(canvas,P,w,h);onDone&&onDone();return}
+  if(P.family==='wave'){drawWave(canvas,P,w,h);onDone&&onDone();return}
   if(P.family==='flowfield'){drawFlowFieldChunked(canvas,P,w,h,onDone);return}
   if(P.family==='voronoi'){drawVoronoiChunked(canvas,P,w,h,onDone);return}
 }
@@ -953,7 +1104,7 @@ const HERO_UUID='f47ac10b-58cc-4372-a567-0e02b2c3d479';
 let curUUID=HERO_UUID,curFamily='flowfield';
 let renderToken=0; // cancel stale renders
 
-const FAM_LABEL={flowfield:'Flow Field',voronoi:'Voronoi',geometric:'Geometric',ascii:'ASCII'};
+const FAM_LABEL={flowfield:'Flow Field',voronoi:'Voronoi',geometric:'Geometric',ascii:'ASCII',mandala:'Mandala',wave:'Wave'};
 
 function applyHero(uuid,family,showProg){
   curUUID=uuid;curFamily=family;
@@ -1051,14 +1202,16 @@ const SC=[
   {uuid:'f47ac10b-58cc-4372-a567-0e02b2c3d479',fam:'flowfield',pal:{hue:215,sat:72,lum1:74,lum2:16,accent:42}},
   {uuid:'a1b2c3d4-e5f6-7890-abcd-ef1234567890',fam:'voronoi',pal:{hue:342,sat:65,lum1:72,lum2:14,accent:195}},
   {uuid:'deadbeef-cafe-4abe-b00d-123456789abc',fam:'geometric',pal:{hue:145,sat:58,lum1:70,lum2:15,accent:275}},
-  {uuid:'1a2b3c4d-5e6f-4789-9abc-def012345678',fam:'ascii',pal:{hue:28,sat:60,lum1:68,lum2:12,accent:200}}
+  {uuid:'1a2b3c4d-5e6f-4789-9abc-def012345678',fam:'ascii',pal:{hue:28,sat:60,lum1:68,lum2:12,accent:200}},
+  {uuid:'9f8e7d6c-5b4a-4392-8170-0f1e2d3c4b5a',fam:'mandala',pal:{hue:260,sat:65,lum1:72,lum2:14,accent:45}},
+  {uuid:'c0ffee00-1337-4abc-def0-123456789abc',fam:'wave',pal:{hue:185,sat:62,lum1:70,lum2:16,accent:340}}
 ];
 
 function renderShowcase(){
-  ['pc1','pc2','pc3','pc4'].forEach((id,i)=>{
+  ['pc1','pc2','pc3','pc4','pc5','pc6'].forEach((id,i)=>{
     const canvas=document.getElementById(id);if(!canvas)return;
     const par=canvas.parentElement;
-    const w=Math.max(par.offsetWidth,280),h=Math.max(par.offsetHeight,210);
+    const w=Math.max(par.offsetWidth,240),h=Math.max(par.offsetHeight,180);
     const d=SC[i];
     draw(canvas,{...parseUUID(d.uuid),...d.pal,family:d.fam,seed:uuidSeed(d.uuid)},w,h,null)
   })
@@ -1113,7 +1266,7 @@ function loadMoreGallery(){
 }
 
 // ─── EXPLORE MODE ───
-const FAMS=['flowfield','voronoi','geometric','ascii'];
+const FAMS=['flowfield','voronoi','geometric','ascii','mandala','wave'];
 
 function mkExpCard(uuid,fam){
   const card=document.createElement('div');card.className='exp-card';
@@ -1154,7 +1307,8 @@ function renderCTA(){
 
 // ─── SHARE ───
 function shareOnX(){
-  const txt=`My device's UUID generates this wallpaper — unique to this machine, forever.\n\nTry yours → uuidwalls.com\n\nUUID: ${curUUID}`;
+  const fam=FAM_LABEL[curFamily];
+  const txt=`Every UUID generates a unique wall. Mine is a ${fam} — no other machine on earth renders the same one.\n\nGenerate yours → uuidwalls.com`;
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`,'_blank','noopener')
 }
 
