@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUIDWalls — Your Identity, Rendered</title>
+<meta name="description" content="Turn any UUID into a one-of-a-kind generative wallpaper. Works on every device. No two alike.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0a0908;
+  --ink2:#141210;
+  --ink3:#1e1b18;
+  --paper:#f0ede8;
+  --p85:rgba(240,237,232,0.85);
+  --p55:rgba(240,237,232,0.55);
+  --p30:rgba(240,237,232,0.3);
+  --p15:rgba(240,237,232,0.15);
+  --p08:rgba(240,237,232,0.08);
+  --p05:rgba(240,237,232,0.05);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Outfit',sans-serif;
+  --r6:6px;--r10:10px;--r14:14px;
+  --ease:0.22s cubic-bezier(.4,0,.2,1)
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);overflow-x:hidden}
+
+/* NAV */
+nav{
+  position:fixed;inset:0 0 auto;z-index:100;height:58px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;
+  background:rgba(10,9,8,0.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--p08)
+}
+.nav-logo{font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--paper);letter-spacing:-0.01em;cursor:default}
+.nav-logo em{font-style:italic;opacity:0.55}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:13px;color:var(--p55);text-decoration:none;letter-spacing:0.02em;transition:color var(--ease)}
+.nav-links a:hover{color:var(--paper)}
+.nav-btn{background:var(--paper);color:var(--ink);border:none;border-radius:var(--r6);padding:8px 18px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:opacity var(--ease)}
+.nav-btn:hover{opacity:0.85}
+@media(max-width:640px){.nav-links{display:none}}
+
+/* HERO */
+#hero{
+  position:relative;width:100%;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;padding-top:58px
+}
+#wallCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.h-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 50%,rgba(10,9,8,0.05) 0%,rgba(10,9,8,0.6) 100%)}
+.h-fade{position:absolute;bottom:0;left:0;right:0;height:200px;pointer-events:none;background:linear-gradient(transparent,var(--ink))}
+
+.hero-content{position:relative;z-index:10;text-align:center;padding:2rem 1.5rem;max-width:760px;width:100%}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;margin-bottom:1.75rem;
+  font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--p55)
+}
+.eyebrow-pip{width:4px;height:4px;border-radius:50%;background:var(--p55)}
+
+h1{
+  font-family:var(--serif);font-size:clamp(3rem,8vw,6rem);
+  font-weight:700;line-height:1.02;letter-spacing:-0.025em;
+  color:var(--paper);margin-bottom:1.2rem;
+  text-shadow:0 2px 48px rgba(10,9,8,0.85)
+}
+h1 em{font-style:italic;font-weight:400}
+
+.hero-sub{
+  font-size:clamp(0.95rem,2vw,1.1rem);font-weight:300;color:var(--p85);
+  line-height:1.75;margin:0 auto 2.25rem;max-width:460px;
+  text-shadow:0 1px 16px rgba(10,9,8,0.9)
+}
+
+/* GENERATOR CARD */
+.gen-card{
+  background:rgba(10,9,8,0.72);border:1px solid var(--p15);border-radius:var(--r14);
+  padding:1.375rem 1.625rem 1.125rem;
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  max-width:620px;margin:0 auto;box-shadow:0 8px 48px rgba(0,0,0,0.55)
+}
+
+.pattern-switcher{display:flex;gap:6px;margin-bottom:1rem;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.pattern-switcher::-webkit-scrollbar{display:none}
+.pat-btn{
+  background:var(--p05);border:1px solid var(--p15);border-radius:20px;
+  padding:6px 14px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;
+  color:var(--p55);cursor:pointer;transition:all var(--ease);white-space:nowrap;flex-shrink:0
+}
+.pat-btn:hover{background:var(--p08);color:var(--p85)}
+.pat-btn.active{background:var(--paper);color:var(--ink);border-color:var(--paper);font-weight:500}
+
+.gen-row{display:flex;gap:8px;align-items:stretch;margin-bottom:0.875rem}
+#uuidInput{
+  flex:1;background:var(--p05);border:1px solid var(--p15);border-radius:var(--r6);
+  padding:11px 14px;font-family:var(--mono);font-size:12px;color:var(--paper);
+  outline:none;min-width:0;letter-spacing:0.04em;transition:border-color var(--ease)
+}
+#uuidInput:focus{border-color:var(--p30)}
+#uuidInput::placeholder{color:var(--p30)}
+
+.btn-rand{
+  background:transparent;border:1px solid var(--p15);border-radius:var(--r6);
+  padding:11px 14px;font-family:var(--mono);font-size:11px;color:var(--p55);
+  cursor:pointer;flex-shrink:0;transition:all var(--ease);white-space:nowrap
+}
+.btn-rand:hover{background:var(--p08);color:var(--paper);border-color:var(--p30)}
+
+.btn-render{
+  background:var(--paper);color:var(--ink);border:none;border-radius:var(--r6);
+  padding:11px 20px;font-family:var(--sans);font-size:13px;font-weight:500;
+  cursor:pointer;flex-shrink:0;white-space:nowrap;transition:opacity var(--ease),transform 0.1s
+}
+.btn-render:hover{opacity:0.88}
+.btn-render:active{transform:scale(0.97)}
+
+/* ACTION ROW */
+.action-row{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding-top:0.875rem;border-top:1px solid var(--p08)
+}
+.meta-live{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--p55)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+
+.action-btns{display:flex;gap:8px;align-items:center}
+.icon-btn{
+  display:flex;align-items:center;gap:6px;
+  background:transparent;border:1px solid var(--p15);border-radius:var(--r6);
+  padding:7px 13px;font-family:var(--mono);font-size:10px;letter-spacing:0.05em;
+  color:var(--p55);cursor:pointer;transition:all var(--ease)
+}
+.icon-btn:hover{background:var(--p08);color:var(--paper);border-color:var(--p30)}
+.icon-btn svg{width:12px;height:12px;flex-shrink:0}
+
+/* DOWNLOAD DROPDOWN */
+.dl-wrap{position:relative}
+.dl-menu{
+  position:absolute;bottom:calc(100% + 6px);right:0;
+  background:var(--ink2);border:1px solid var(--p15);border-radius:var(--r10);
+  padding:6px;min-width:160px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.6);
+  display:none;z-index:50
+}
+.dl-menu.open{display:block}
+.dl-opt{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px;border-radius:var(--r6);cursor:pointer;
+  font-family:var(--mono);font-size:10px;color:var(--p85);
+  transition:background var(--ease);gap:12px
+}
+.dl-opt:hover{background:var(--p08)}
+.dl-opt-label{letter-spacing:0.04em}
+.dl-opt-dim{color:var(--p30);font-size:9px;letter-spacing:0.03em}
+
+/* SCROLL HINT */
+.scroll-hint{
+  position:absolute;bottom:2.25rem;left:50%;transform:translateX(-50%);
+  z-index:10;display:flex;flex-direction:column;align-items:center;gap:7px;
+  color:var(--p30);font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  animation:bob 2.8s ease-in-out infinite
+}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* SECTIONS */
+section{padding:7rem 1.5rem}
+.s-inner{max-width:960px;margin:0 auto}
+.s-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--p30);margin-bottom:1rem}
+.s-title{font-family:var(--serif);font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:700;color:var(--paper);letter-spacing:-0.025em;line-height:1.1;margin-bottom:0.875rem}
+.s-sub{font-size:1rem;font-weight:300;color:var(--p85);max-width:520px;line-height:1.75;margin-bottom:3.5rem}
+
+/* HOW GRID */
+#how{background:var(--ink2)}
+.how-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:1px;background:var(--p08);border:1px solid var(--p08);border-radius:var(--r14);overflow:hidden
+}
+.how-step{background:var(--ink2);padding:2.25rem 1.75rem}
+.step-n{font-family:var(--serif);font-size:4rem;font-weight:700;color:rgba(240,237,232,0.05);line-height:1;margin-bottom:1.25rem;letter-spacing:-0.04em}
+.step-h{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--paper);margin-bottom:0.6rem}
+.step-p{font-size:0.875rem;color:var(--p85);line-height:1.75;font-weight:300}
+
+/* SHOWCASE */
+#showcase{background:var(--ink)}
+.showcase-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1px;background:var(--p08);border:1px solid var(--p08);border-radius:var(--r14);overflow:hidden
+}
+.s-card{position:relative;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:var(--ink2)}
+.s-card canvas{width:100%;height:100%;display:block;transition:transform 0.6s ease}
+.s-card:hover canvas{transform:scale(1.04)}
+.s-card-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,9,8,0.92) 0%,rgba(10,9,8,0.05) 55%,transparent 100%);
+  padding:1.5rem 1.25rem;display:flex;flex-direction:column;justify-content:flex-end
+}
+.s-card h4{font-family:var(--serif);font-size:1.15rem;font-weight:700;color:var(--paper);margin-bottom:3px}
+.s-card p{font-family:var(--mono);font-size:9px;color:var(--p55);letter-spacing:0.08em}
+
+/* DEVICES SECTION */
+#devices{background:var(--ink2)}
+.devices-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+  background:var(--p08);border:1px solid var(--p08);border-radius:var(--r14);overflow:hidden;
+  margin-bottom:2.5rem
+}
+.dev-item{background:var(--ink2);padding:1.75rem 1.5rem;text-align:center}
+.dev-icon{font-size:2rem;margin-bottom:0.875rem;display:block}
+.dev-name{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--paper);margin-bottom:4px}
+.dev-where{font-family:var(--mono);font-size:9px;color:var(--p55);letter-spacing:0.06em;line-height:1.6}
+.res-note{
+  background:var(--p05);border:1px solid var(--p08);border-radius:var(--r10);
+  padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap
+}
+.res-note-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.res-note-body{flex:1;min-width:200px}
+.res-note-title{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--paper);margin-bottom:4px}
+.res-note-text{font-size:0.875rem;font-weight:300;color:var(--p85);line-height:1.7}
+
+/* GALLERY */
+#gallery{background:var(--ink)}
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:10px;margin-bottom:2rem
+}
+.g-card{
+  position:relative;border-radius:var(--r10);overflow:hidden;aspect-ratio:16/10;
+  cursor:pointer;background:var(--ink3);border:1px solid var(--p08);
+  transition:border-color var(--ease),transform var(--ease)
+}
+.g-card:hover{border-color:var(--p30);transform:translateY(-2px)}
+.g-card canvas{width:100%;height:100%;display:block}
+.g-info{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(10,9,8,0.95));
+  padding:1rem 0.875rem 0.625rem
+}
+.g-uuid{font-family:var(--mono);font-size:8px;color:var(--p30);letter-spacing:0.04em;margin-bottom:3px}
+.g-pat{font-family:var(--mono);font-size:9px;color:var(--p85);letter-spacing:0.06em}
+.g-try{
+  position:absolute;top:8px;right:8px;opacity:0;
+  background:rgba(10,9,8,0.75);border:1px solid var(--p15);border-radius:20px;
+  padding:4px 10px;font-family:var(--mono);font-size:8px;color:var(--p85);
+  cursor:pointer;transition:opacity var(--ease);backdrop-filter:blur(8px)
+}
+.g-card:hover .g-try{opacity:1}
+
+/* FAQ */
+#faq{background:var(--ink2)}
+.faq-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--p08);border:1px solid var(--p08);border-radius:var(--r14);overflow:hidden
+}
+@media(max-width:600px){.faq-grid{grid-template-columns:1fr}}
+.faq-item{background:var(--ink2);padding:2rem 1.75rem}
+.faq-q{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--paper);margin-bottom:0.5rem}
+.faq-a{font-size:0.875rem;font-weight:300;color:var(--p85);line-height:1.75}
+.faq-a code{font-family:var(--mono);font-size:10px;background:var(--p08);padding:2px 6px;border-radius:4px;color:var(--paper)}
+
+/* CTA */
+#cta-sec{background:var(--ink2);position:relative;overflow:hidden;text-align:center;padding:8rem 1.5rem}
+#ctaCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:0.1}
+.cta-inner{position:relative;z-index:2}
+.cta-title{font-family:var(--serif);font-size:clamp(2.5rem,6vw,5rem);font-weight:700;color:var(--paper);letter-spacing:-0.025em;line-height:1.05;margin-bottom:1rem}
+.cta-title em{font-style:italic;font-weight:400}
+.cta-sub{font-size:1rem;font-weight:300;color:var(--p85);margin-bottom:2.5rem}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-lg-primary{background:var(--paper);color:var(--ink);border:none;border-radius:var(--r6);padding:16px 32px;font-family:var(--sans);font-size:15px;font-weight:500;cursor:pointer;transition:opacity var(--ease)}
+.btn-lg-primary:hover{opacity:0.88}
+.btn-lg-ghost{background:transparent;color:var(--p85);border:1px solid var(--p15);border-radius:var(--r6);padding:16px 24px;font-family:var(--sans);font-size:15px;font-weight:400;cursor:pointer;transition:all var(--ease)}
+.btn-lg-ghost:hover{background:var(--p08);color:var(--paper);border-color:var(--p30)}
+
+/* FOOTER */
+footer{background:var(--ink);border-top:1px solid var(--p08);padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--paper)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-family:var(--mono);font-size:10px;color:var(--p30);text-decoration:none;letter-spacing:0.06em;transition:color var(--ease)}
+.footer-links a:hover{color:var(--paper)}
+.footer-copy{font-family:var(--mono);font-size:10px;color:rgba(240,237,232,0.18);letter-spacing:0.04em}
+
+/* TOAST */
+#toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--paper);color:var(--ink);border-radius:var(--r6);
+  padding:11px 20px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:0.04em;
+  z-index:999;transition:transform 0.35s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;pointer-events:none;box-shadow:0 4px 24px rgba(0,0,0,0.5)
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* SPINNER overlay for download */
+#dlSpinner{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(10,9,8,0.75);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;flex-direction:column;gap:1rem
+}
+#dlSpinner.show{display:flex}
+.spin-ring{width:44px;height:44px;border:2px solid var(--p15);border-top-color:var(--paper);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-label{font-family:var(--mono);font-size:11px;color:var(--p85);letter-spacing:0.1em}
+
+/* FADE */
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:600px){
+  .gen-row{flex-wrap:wrap}
+  .btn-render{width:100%}
+  .action-btns{flex-wrap:wrap}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  footer{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">UUID<em>Walls</em></div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#showcase">Patterns</a>
+    <a href="#devices">Devices</a>
+    <a href="#gallery">Gallery</a>
+  </div>
+  <button class="nav-btn" onclick="scrollToTop()">Try it free</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="wallCanvas"></canvas>
+  <div class="h-vignette"></div>
+  <div class="h-fade"></div>
+
+  <div class="hero-content">
+    <div class="eyebrow"><span class="eyebrow-pip"></span>Generative Identity<span class="eyebrow-pip"></span></div>
+    <h1>Every device<br>has a <em>face.</em></h1>
+    <p class="hero-sub">Your UUID is a fingerprint shared with no machine on earth. We render it into a wallpaper — uniquely, permanently yours.</p>
+
+    <div class="gen-card">
+      <div class="pattern-switcher" id="patternSwitcher">
+        <button class="pat-btn active" data-family="flowfield">Flow Field</button>
+        <button class="pat-btn" data-family="voronoi">Voronoi</button>
+        <button class="pat-btn" data-family="geometric">Geometric</button>
+        <button class="pat-btn" data-family="ascii">ASCII</button>
+      </div>
+
+      <div class="gen-row">
+        <input id="uuidInput" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" maxlength="36" spellcheck="false" autocomplete="off">
+        <button class="btn-rand" onclick="randomUUID()" title="Generate random UUID">↻ Random</button>
+        <button class="btn-render" onclick="onGenerate()">Render</button>
+      </div>
+
+      <div class="action-row">
+        <div class="meta-live">
+          <span class="live-dot"></span>
+          <span id="metaText">Live · rendering</span>
+        </div>
+        <div class="action-btns">
+          <!-- DOWNLOAD -->
+          <div class="dl-wrap" id="dlWrap">
+            <button class="icon-btn" onclick="toggleDlMenu(event)">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 2v8M5 7l3 3 3-3M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1"/>
+              </svg>
+              Download
+            </button>
+            <div class="dl-menu" id="dlMenu">
+              <div class="dl-opt" onclick="downloadWall('screen')">
+                <span class="dl-opt-label">Screen res</span>
+                <span class="dl-opt-dim" id="dimScreen">—</span>
+              </div>
+              <div class="dl-opt" onclick="downloadWall('2k')">
+                <span class="dl-opt-label">2K</span>
+                <span class="dl-opt-dim">2560 × 1440</span>
+              </div>
+              <div class="dl-opt" onclick="downloadWall('4k')">
+                <span class="dl-opt-label">4K</span>
+                <span class="dl-opt-dim">3840 × 2160</span>
+              </div>
+              <div class="dl-opt" onclick="downloadWall('mobile')">
+                <span class="dl-opt-label">Mobile</span>
+                <span class="dl-opt-dim">1290 × 2796</span>
+              </div>
+            </div>
+          </div>
+          <!-- SHARE -->
+          <button class="icon-btn" onclick="shareOnX()">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M7 2v10M3 8l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Explore
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="s-inner">
+    <div class="s-eyebrow">The mechanism</div>
+    <h2 class="s-title fade-up">Your UUID is a genome</h2>
+    <p class="s-sub fade-up">Each segment of your UUID drives a different visual gene — deterministically, without randomness. Same UUID, same wallpaper. Always.</p>
+    <div class="how-grid fade-up">
+      <div class="how-step">
+        <div class="step-n">01</div>
+        <div class="step-h">Parse the UUID</div>
+        <p class="step-p">Your 128-bit identifier is split into segments. Each one becomes a visual parameter. Nothing is random.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">02</div>
+        <div class="step-h">Map to visual genes</div>
+        <p class="step-p">Pattern family. Color palette. Density. Direction. Mood. Every choice traces back to a specific byte in your UUID.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">03</div>
+        <div class="step-h">Render locally</div>
+        <p class="step-p">Everything runs in your browser. No server. No upload. Your UUID never leaves your device.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">04</div>
+        <div class="step-h">Download at any resolution</div>
+        <p class="step-p">Export at screen resolution, 2K, 4K, or mobile — rendered offscreen at full quality, ready to set as your wallpaper.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PATTERN SHOWCASE -->
+<section id="showcase">
+  <div class="s-inner">
+    <div class="s-eyebrow">Four pattern families</div>
+    <h2 class="s-title fade-up">One UUID. Four expressions.</h2>
+    <p class="s-sub fade-up">Your UUID picks a pattern — or you choose. The same identity expressed in four different visual languages.</p>
+    <div class="showcase-grid fade-up">
+      <div class="s-card" onclick="applyShowcase('flowfield')">
+        <canvas id="pc1"></canvas>
+        <div class="s-card-ov"><h4>Flow Field</h4><p>Noise-driven vector paths · Organic motion</p></div>
+      </div>
+      <div class="s-card" onclick="applyShowcase('voronoi')">
+        <canvas id="pc2"></canvas>
+        <div class="s-card-ov"><h4>Voronoi</h4><p>Distance-field cells · Crystalline structure</p></div>
+      </div>
+      <div class="s-card" onclick="applyShowcase('geometric')">
+        <canvas id="pc3"></canvas>
+        <div class="s-card-ov"><h4>Geometric</h4><p>Angular tessellation · Mathematical precision</p></div>
+      </div>
+      <div class="s-card" onclick="applyShowcase('ascii')">
+        <canvas id="pc4"></canvas>
+        <div class="s-card-ov"><h4>ASCII</h4><p>Character density fields · Terminal origins</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEVICES -->
+<section id="devices">
+  <div class="s-inner">
+    <div class="s-eyebrow">Universal</div>
+    <h2 class="s-title fade-up">Works on every screen</h2>
+    <p class="s-sub fade-up">UUIDWalls is not a Mac app. It's not a Windows app. It's a universal identity renderer — any device that has a UUID can have a wall.</p>
+    <div class="devices-grid fade-up">
+      <div class="dev-item">
+        <span class="dev-icon">💻</span>
+        <div class="dev-name">Mac</div>
+        <div class="dev-where">System Settings → General → About → Hardware UUID</div>
+      </div>
+      <div class="dev-item">
+        <span class="dev-icon">🖥️</span>
+        <div class="dev-name">Windows</div>
+        <div class="dev-where">Run: <code style="font-family:var(--mono);font-size:9px">wmic csproduct get UUID</code></div>
+      </div>
+      <div class="dev-item">
+        <span class="dev-icon">🐧</span>
+        <div class="dev-name">Linux</div>
+        <div class="dev-where"><code style="font-family:var(--mono);font-size:9px">cat /etc/machine-id</code></div>
+      </div>
+      <div class="dev-item">
+        <span class="dev-icon">📱</span>
+        <div class="dev-name">iPhone</div>
+        <div class="dev-where">Settings → General → About → scroll to find UUID</div>
+      </div>
+      <div class="dev-item">
+        <span class="dev-icon">🤖</span>
+        <div class="dev-name">Android</div>
+        <div class="dev-where">Settings → About phone → Status → Android ID</div>
+      </div>
+      <div class="dev-item">
+        <span class="dev-icon">⌚</span>
+        <div class="dev-name">Anything</div>
+        <div class="dev-where">Any UUID or unique ID works as a seed — serial numbers, account IDs, even your name</div>
+      </div>
+    </div>
+    <div class="res-note fade-up">
+      <span class="res-note-icon">📐</span>
+      <div class="res-note-body">
+        <div class="res-note-title">Resolution you can actually use</div>
+        <div class="res-note-text">Downloads are rendered at full physical pixel resolution — not just your screen size. The 4K export is 3840 × 2160 pixels: sharp on every Retina, OLED, and 4K display. Mobile export is 1290 × 2796 — Pro iPhone native. All rendering happens locally in your browser.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="s-inner">
+    <div class="s-eyebrow">Community walls</div>
+    <h2 class="s-title fade-up">Walls from real machines</h2>
+    <p class="s-sub fade-up">These are walls generated from real UUIDs. Click any to load it — or generate your own.</p>
+    <div class="gallery-grid fade-up" id="galleryGrid"></div>
+    <div style="text-align:center;margin-top:0.5rem">
+      <button class="btn-lg-ghost" style="padding:12px 28px;font-size:13px" onclick="loadMoreGallery()">Load more walls</button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="s-inner">
+    <div class="s-eyebrow">Questions</div>
+    <h2 class="s-title fade-up">Honest answers</h2>
+    <div class="faq-grid fade-up">
+      <div class="faq-item">
+        <div class="faq-q">Does this send my UUID anywhere?</div>
+        <div class="faq-a">No. Everything runs in your browser. Your UUID is never transmitted. There is no backend, no analytics on your input.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What resolution will my wallpaper be?</div>
+        <div class="faq-a">You choose. Screen res matches your display. 2K exports at 2560×1440. 4K at 3840×2160. Mobile at 1290×2796. All crisp, all local.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can two machines get the same wall?</div>
+        <div class="faq-a">Only if they share a UUID — which is cryptographically impossible by design. Your wall is provably yours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Will my wall look the same next year?</div>
+        <div class="faq-a">Yes. The algorithm is deterministic and versioned. Same UUID, same result, always. It is not random.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does it only work on Mac?</div>
+        <div class="faq-a">No. Any device with a UUID works — Mac, Windows, Linux, iPhone, Android. Even a serial number or any string produces a wall.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is a native app coming?</div>
+        <div class="faq-a">Yes. Native apps will read your UUID automatically and set the wallpaper with one tap. Web first, apps soon.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta-sec">
+  <canvas id="ctaCanvas"></canvas>
+  <div class="cta-inner">
+    <div class="s-eyebrow" style="margin-bottom:1.25rem">Your turn</div>
+    <h2 class="cta-title fade-up">What does your<br><em>device look like?</em></h2>
+    <p class="cta-sub fade-up">No signup. No install. Enter your UUID, pick your pattern, download your wall.</p>
+    <div class="cta-btns fade-up">
+      <button class="btn-lg-primary" onclick="scrollToTop()">Generate my wall</button>
+      <button class="btn-lg-ghost" onclick="shareOnX()">Share on X</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">UUIDWalls</div>
+  <div class="footer-links">
+    <a href="#how">How it works</a>
+    <a href="#gallery">Gallery</a>
+    <a href="mailto:hello@uuidwalls.com">Contact</a>
+  </div>
+  <div class="footer-copy">Deterministic · Private · Universal</div>
+</footer>
+
+<div id="toast">Copied</div>
+<div id="dlSpinner"><div class="spin-ring"></div><div class="spin-label">Rendering at full resolution…</div></div>
+
+<script>
+// ─── PRNG ───
+function mkPRNG(seed){
+  let s=seed>>>0;if(!s)s=2463534242;
+  return()=>{s^=s<<13;s^=s>>17;s^=s<<5;return(s>>>0)/4294967296}
+}
+function uuidSeed(uuid){
+  const c=uuid.replace(/-/g,'').toLowerCase();
+  let h=2166136261;
+  for(let i=0;i<c.length;i++){h^=c.charCodeAt(i);h=(h*16777619)>>>0}
+  return h
+}
+function parseUUID(uuid,forceFamily){
+  const clean=uuid.trim().replace(/-/g,'').toLowerCase().replace(/[^0-9a-f]/g,'').padEnd(32,'0').slice(0,32);
+  const s=(o,l)=>parseInt(clean.slice(o,o+l),16)||0;
+  const fams=['flowfield','voronoi','geometric','ascii'];
+  const fi=forceFamily?fams.indexOf(forceFamily):s(0,4)%4;
+  return{
+    family:fams[Math.max(0,fi)],
+    hue:s(4,4)%360,
+    sat:50+s(8,4)%35,
+    lum1:55+s(12,4)%28,
+    lum2:14+s(16,4)%18,
+    accent:(s(4,4)%360+100+s(20,4)%100)%360,
+    density:0.3+s(24,4)%1000/1000*0.7,
+    angle:s(28,4)%360*Math.PI/180,
+    mood:s(0,2)%100/100,
+    seed:uuidSeed(uuid)
+  }
+}
+
+// ─── COLOR ───
+function hsl(h,s,l,a){return a!==undefined?`hsla(${h|0},${s|0}%,${l|0}%,${a})`:`hsl(${h|0},${s|0}%,${l|0}%)`}
+function hslRgb(h,s,l){
+  h/=360;s/=100;l/=100;
+  if(!s)return[l*255|0,l*255|0,l*255|0];
+  const q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;
+  const f=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<.5)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};
+  return[f(p,q,h+1/3)*255|0,f(p,q,h)*255|0,f(p,q,h-1/3)*255|0]
+}
+
+// ─── NOISE ───
+function mkNoise(seed){
+  const perm=new Uint8Array(512),p=new Uint8Array(256);
+  for(let i=0;i<256;i++)p[i]=i;
+  let s=seed>>>0;
+  const r=()=>{s^=s<<13;s^=s>>17;s^=s<<5;return(s>>>0)/4294967296};
+  for(let i=255;i>0;i--){const j=r()*i|0;const t=p[i];p[i]=p[j];p[j]=t}
+  for(let i=0;i<512;i++)perm[i]=p[i&255];
+  const g=[[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+  const dot=(g,x,y)=>g[0]*x+g[1]*y;
+  const fade=t=>t*t*t*(t*(t*6-15)+10);
+  const lerp=(a,b,t)=>a+t*(b-a);
+  return(x,y)=>{
+    const X=Math.floor(x)&255,Y=Math.floor(y)&255;
+    x-=Math.floor(x);y-=Math.floor(y);
+    const u=fade(x),v=fade(y),a=perm[X]+Y,b=perm[X+1]+Y;
+    return lerp(lerp(dot(g[perm[a]%8],x,y),dot(g[perm[b]%8],x-1,y),u),
+                lerp(dot(g[perm[a+1]%8],x,y-1),dot(g[perm[b+1]%8],x-1,y-1),u),v)
+  }
+}
+
+// ─── RENDERERS ───
+function drawFlowField(canvas,P,w,h){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,angle,mood,seed}=P;
+  const n=mkNoise(seed);
+  ctx.fillStyle=hsl(hue,sat*0.3,lum2*0.5);ctx.fillRect(0,0,w,h);
+  const step=Math.max(5,16-density*12);
+  const iters=Math.floor(50+mood*90);
+  const sc=0.0022+density*0.002;
+  ctx.lineWidth=0.7+(1-mood)*1.5;ctx.lineCap='round';
+  for(let x=0;x<w;x+=step){
+    for(let y=0;y<h;y+=step){
+      let cx=x+(Math.random()-.5)*step*.4,cy=y+(Math.random()-.5)*step*.4;
+      const isAcc=((x/step|0)+(y/step|0))%9===0;
+      const lh=isAcc?accent:hue+(n(x*.001,y*.001)*28);
+      const lm=lum2+(lum1-lum2)*(x/w*.5+y/h*.5);
+      ctx.globalAlpha=0.4+mood*0.45;ctx.strokeStyle=hsl(lh,sat,lm);
+      ctx.beginPath();ctx.moveTo(cx,cy);
+      for(let i=0;i<iters;i++){
+        const v=n(cx*sc,cy*sc)*Math.PI*4+angle;
+        cx+=Math.cos(v)*2.2;cy+=Math.sin(v)*2.2;
+        if(cx<0||cx>w||cy<0||cy>h)break;
+        ctx.lineTo(cx,cy)
+      }
+      ctx.stroke()
+    }
+  }
+  ctx.globalAlpha=1
+}
+
+function drawVoronoi(canvas,P,w,h){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,mood,seed}=P;
+  const rng=mkPRNG(seed);
+  const count=Math.floor(10+density*35);
+  const pts=Array.from({length:count},()=>({x:rng()*w,y:rng()*h}));
+  const cols=pts.map((_,i)=>hslRgb(i%5===0?accent:hue+(i%4)*18,sat,lum2+(i/count)*(lum1-lum2)));
+  const img=ctx.createImageData(w,h);const d=img.data;
+  const step=Math.max(2,w/240|0);
+  for(let py=0;py<h;py+=step){
+    for(let px=0;px<w;px+=step){
+      let d1=Infinity,d2=Infinity,cl=0;
+      for(let k=0;k<pts.length;k++){
+        const dx=px-pts[k].x,dy=py-pts[k].y,dist=dx*dx+dy*dy;
+        if(dist<d1){d2=d1;d1=dist;cl=k}else if(dist<d2)d2=dist
+      }
+      const edge=Math.min(1,(Math.sqrt(d2)-Math.sqrt(d1))*.1);
+      const[r,g,b]=cols[cl];const f=mood*.5+.5;
+      const rv=Math.min(255,r*f+edge*28|0),gv=Math.min(255,g*f+edge*28|0),bv=Math.min(255,b*f+edge*28|0);
+      for(let dy2=0;dy2<step&&py+dy2<h;dy2++)
+        for(let dx2=0;dx2<step&&px+dx2<w;dx2++){
+          const idx=((py+dy2)*w+(px+dx2))*4;d[idx]=rv;d[idx+1]=gv;d[idx+2]=bv;d[idx+3]=255
+        }
+    }
+  }
+  ctx.putImageData(img,0,0);
+  for(const pt of pts){ctx.beginPath();ctx.arc(pt.x,pt.y,1.5,0,Math.PI*2);ctx.fillStyle=hsl(accent,sat,lum1,.8);ctx.fill()}
+}
+
+function drawGeometric(canvas,P,w,h){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,angle,mood,seed}=P;
+  const rng=mkPRNG(seed);
+  ctx.fillStyle=hsl(hue,sat*.4,lum2*.5);ctx.fillRect(0,0,w,h);
+  ctx.save();ctx.translate(w/2,h/2);ctx.rotate(angle);ctx.translate(-w/2,-h/2);
+  const cs=Math.max(18,72-density*50);
+  const cols=Math.ceil(w/cs)+3,rows=Math.ceil(h/cs)+3;
+  const sh=Math.floor(rng()*3);
+  for(let row=-1;row<rows;row++){
+    for(let col=-1;col<cols;col++){
+      const cx=col*cs+(row%2===0?0:cs*.5),cy=row*cs*.866;
+      const lm=lum2+(lum1-lum2)*((col/cols+row/rows)/2);
+      const isAcc=(col*3+row*7)%13===0;
+      const fh=isAcc?accent:hue+rng()*22-11;
+      ctx.fillStyle=hsl(fh,sat,lm,.25+rng()*.6);
+      ctx.strokeStyle=hsl(fh,sat*.4,lum1,.1);ctx.lineWidth=.5;
+      const r=cs*(.41+mood*.09);
+      ctx.beginPath();
+      if(sh===0){ctx.moveTo(cx,cy-r);ctx.lineTo(cx+r*.866,cy+r*.5);ctx.lineTo(cx-r*.866,cy+r*.5)}
+      else if(sh===1){for(let i=0;i<6;i++){const a=i*Math.PI/3-Math.PI/6;i?ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))}}
+      else{ctx.moveTo(cx,cy-r);ctx.lineTo(cx+r*.6,cy);ctx.lineTo(cx,cy+r);ctx.lineTo(cx-r*.6,cy)}
+      ctx.closePath();ctx.fill();ctx.stroke()
+    }
+  }
+  ctx.restore()
+}
+
+function drawASCII(canvas,P,w,h){
+  const ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;
+  const{hue,sat,lum1,lum2,accent,density,angle,mood,seed}=P;
+  const n=mkNoise(seed);
+  const chars='@#%&$*+=:·. ';
+  const fs=Math.max(8,Math.floor(15-density*6));
+  ctx.fillStyle=hsl(hue,sat*.3,lum2*.4);ctx.fillRect(0,0,w,h);
+  ctx.font=`${fs}px "IBM Plex Mono",monospace`;ctx.textBaseline='top';
+  const sc=0.004+density*.003;
+  const cw=fs*.62,rh=fs*1.1;
+  const nc=Math.ceil(w/cw)+1,nr=Math.ceil(h/rh)+1;
+  for(let row=0;row<nr;row++){
+    for(let col=0;col<nc;col++){
+      const px=col*cw,py=row*rh;
+      const nx=(px*Math.cos(angle)+py*Math.sin(angle))*sc;
+      const ny=(-px*Math.sin(angle)+py*Math.cos(angle))*sc;
+      const v1=(n(nx,ny)+1)/2,v2=(n(nx*2.1+3.7,ny*2.1+1.3)+1)/2;
+      const v=v1*.7+v2*.3;
+      const ch=chars[Math.min(chars.length-1,Math.floor(v*chars.length))];
+      if(ch===' ')continue;
+      const isAcc=(col*5+row*7)%17===0;
+      ctx.fillStyle=hsl(isAcc?accent:hue+(v*30),sat,lum2+(lum1-lum2)*v,0.5+v*.5);
+      ctx.fillText(ch,px,py)
+    }
+  }
+}
+
+function draw(canvas,P,w,h){
+  if(!P)return;
+  ({flowfield:drawFlowField,voronoi:drawVoronoi,geometric:drawGeometric,ascii:drawASCII})[P.family](canvas,P,w,h)
+}
+
+// ─── STATE ───
+const HERO_UUID='f47ac10b-58cc-4372-a567-0e02b2c3d479';
+let curUUID=HERO_UUID,curFamily='flowfield';
+
+const FAM_LABEL={flowfield:'Flow Field',voronoi:'Voronoi',geometric:'Geometric',ascii:'ASCII'};
+
+function applyHero(uuid,family){
+  curUUID=uuid;curFamily=family;
+  document.querySelectorAll('.pat-btn').forEach(b=>b.classList.toggle('active',b.dataset.family===family));
+  document.getElementById('metaText').textContent=`${FAM_LABEL[family]} · rendering`;
+  const c=document.getElementById('wallCanvas');
+  const dpr=window.devicePixelRatio||1;
+  const w=window.innerWidth,h=window.innerHeight;
+  c.style.width=w+'px';c.style.height=h+'px';
+  draw(c,parseUUID(uuid,family),w*dpr,h*dpr);
+  ctx_scale(c,dpr);
+  setTimeout(()=>document.getElementById('metaText').textContent='Live · rendering',500)
+}
+
+// scale canvas display
+function ctx_scale(canvas,dpr){
+  // canvas already drawn at physical pixels via width/height
+  // CSS size already set — nothing more needed here
+}
+
+function onGenerate(){
+  const v=document.getElementById('uuidInput').value.trim();
+  if(v)applyHero(v,curFamily)
+}
+
+function randomUUID(){
+  const u='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16)});
+  document.getElementById('uuidInput').value=u;
+  applyHero(u,curFamily)
+}
+
+document.getElementById('patternSwitcher').addEventListener('click',e=>{
+  const b=e.target.closest('.pat-btn');if(!b)return;
+  curFamily=b.dataset.family;
+  applyHero(curUUID,curFamily)
+});
+document.getElementById('uuidInput').addEventListener('input',function(){
+  if(this.value.replace(/-/g,'').length>=8)applyHero(this.value,curFamily)
+});
+document.getElementById('uuidInput').addEventListener('keydown',e=>{if(e.key==='Enter')onGenerate()});
+
+// ─── DOWNLOAD ───
+const DL_SIZES={
+  screen:()=>({w:window.innerWidth*(window.devicePixelRatio||1)|0,h:window.innerHeight*(window.devicePixelRatio||1)|0}),
+  '2k':()=>({w:2560,h:1440}),
+  '4k':()=>({w:3840,h:2160}),
+  mobile:()=>({w:1290,h:2796})
+};
+
+function toggleDlMenu(e){
+  e.stopPropagation();
+  const m=document.getElementById('dlMenu');
+  m.classList.toggle('open');
+  // update screen res label
+  const dpr=window.devicePixelRatio||1;
+  document.getElementById('dimScreen').textContent=`${window.innerWidth*dpr|0} × ${window.innerHeight*dpr|0}`;
+}
+document.addEventListener('click',()=>document.getElementById('dlMenu').classList.remove('open'));
+
+function downloadWall(sizeKey){
+  document.getElementById('dlMenu').classList.remove('open');
+  const{w,h}=DL_SIZES[sizeKey]();
+  const spinner=document.getElementById('dlSpinner');
+  spinner.classList.add('show');
+
+  // use requestAnimationFrame so spinner renders first
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const offscreen=document.createElement('canvas');
+    const P=parseUUID(curUUID,curFamily);
+    try{
+      draw(offscreen,P,w,h);
+      offscreen.toBlob(blob=>{
+        spinner.classList.remove('show');
+        if(!blob){showToast('Could not generate image');return}
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;
+        a.download=`uuidwalls-${curUUID.slice(0,8)}-${curFamily}-${sizeKey}.png`;
+        a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),3000);
+        showToast(`Downloading ${w}×${h}`)
+      },'image/png');
+    }catch(err){
+      spinner.classList.remove('show');
+      showToast('Render failed — try a smaller size')
+    }
+  }))
+}
+
+// ─── SHOWCASE ───
+const SC=[
+  {uuid:'f47ac10b-58cc-4372-a567-0e02b2c3d479',fam:'flowfield',pal:{hue:215,sat:72,lum1:74,lum2:16,accent:42}},
+  {uuid:'a1b2c3d4-e5f6-7890-abcd-ef1234567890',fam:'voronoi',pal:{hue:342,sat:65,lum1:72,lum2:14,accent:195}},
+  {uuid:'deadbeef-cafe-4abe-b00d-123456789abc',fam:'geometric',pal:{hue:145,sat:58,lum1:70,lum2:15,accent:275}},
+  {uuid:'1a2b3c4d-5e6f-4789-9abc-def012345678',fam:'ascii',pal:{hue:28,sat:60,lum1:68,lum2:12,accent:200}}
+];
+
+function renderShowcase(){
+  ['pc1','pc2','pc3','pc4'].forEach((id,i)=>{
+    const canvas=document.getElementById(id);if(!canvas)return;
+    const par=canvas.parentElement;
+    const w=Math.max(par.offsetWidth,280),h=Math.max(par.offsetHeight,210);
+    const d=SC[i];
+    draw(canvas,{...parseUUID(d.uuid),...d.pal,family:d.fam,seed:uuidSeed(d.uuid)},w,h)
+  })
+}
+
+function applyShowcase(fam){
+  curFamily=fam;
+  document.querySelectorAll('.pat-btn').forEach(b=>b.classList.toggle('active',b.dataset.family===fam));
+  applyHero(curUUID,fam);
+  scrollToTop()
+}
+
+// ─── GALLERY ───
+const GDATA=[
+  {uuid:'550e8400-e29b-41d4-a716-446655440000',fam:'voronoi',pal:{hue:280,sat:60,lum1:68,lum2:14,accent:160}},
+  {uuid:'6ba7b810-9dad-11d1-80b4-00c04fd430c8',fam:'flowfield',pal:{hue:195,sat:70,lum1:72,lum2:18,accent:30}},
+  {uuid:'7c9e6679-7425-40de-944b-e07fc1f90ae7',fam:'geometric',pal:{hue:355,sat:65,lum1:70,lum2:15,accent:200}},
+  {uuid:'9c858900-8a4d-11d1-8f14-001b62e03e77',fam:'ascii',pal:{hue:120,sat:55,lum1:65,lum2:12,accent:300}},
+  {uuid:'3d813cbb-47fb-32ba-91df-831e1593ac29',fam:'flowfield',pal:{hue:35,sat:68,lum1:75,lum2:20,accent:210}},
+  {uuid:'b45a70b0-abad-4083-a8b5-cd7df9c4e342',fam:'voronoi',pal:{hue:260,sat:62,lum1:70,lum2:16,accent:80}},
+  {uuid:'e9f77540-1be9-4432-8c29-c12b10ffb1f3',fam:'geometric',pal:{hue:170,sat:58,lum1:68,lum2:13,accent:320}},
+  {uuid:'4e56de08-d67e-4c5a-b0e8-3c1e2f4a5b6c',fam:'ascii',pal:{hue:45,sat:64,lum1:72,lum2:18,accent:230}},
+];
+let gLoaded=0;
+
+function mkGalleryCard(data){
+  const card=document.createElement('div');card.className='g-card';
+  const canvas=document.createElement('canvas');card.appendChild(canvas);
+  const info=document.createElement('div');info.className='g-info';
+  info.innerHTML=`<div class="g-uuid">${data.uuid.slice(0,8)}…${data.uuid.slice(-4)}</div><div class="g-pat">${FAM_LABEL[data.fam]}</div>`;
+  card.appendChild(info);
+  const tryBtn=document.createElement('button');tryBtn.className='g-try';tryBtn.textContent='Try this';
+  tryBtn.onclick=e=>{e.stopPropagation();loadCard(data)};
+  card.onclick=()=>loadCard(data);
+  card.appendChild(tryBtn);
+  document.getElementById('galleryGrid').appendChild(card);
+  setTimeout(()=>{
+    const w=Math.max(card.offsetWidth,220),h=Math.max(card.offsetHeight,140);
+    draw(canvas,{...parseUUID(data.uuid),...data.pal,family:data.fam,seed:uuidSeed(data.uuid)},w,h)
+  },40)
+}
+
+function loadCard(data){
+  document.getElementById('uuidInput').value=data.uuid;
+  applyHero(data.uuid,data.fam);scrollToTop()
+}
+
+function loadMoreGallery(){
+  const next=GDATA.slice(gLoaded,gLoaded+4);
+  next.forEach(mkGalleryCard);gLoaded+=next.length;
+  if(gLoaded>=GDATA.length)document.querySelector('#gallery .btn-lg-ghost').style.display='none'
+}
+
+// ─── CTA CANVAS ───
+function renderCTA(){
+  const c=document.getElementById('ctaCanvas');
+  const sec=document.getElementById('cta-sec');
+  draw(c,{...parseUUID('deadbeef-cafe-4abe-b00d-123456789abc'),family:'flowfield',hue:38,sat:55,lum1:72,lum2:18,accent:200,seed:uuidSeed('deadbeef')},
+    sec.offsetWidth||900,sec.offsetHeight||500)
+}
+
+// ─── SHARE ───
+function shareOnX(){
+  const txt=`My device's UUID generates this wallpaper — unique to this machine, forever.\n\nTry yours → uuidwalls.com\n\nUUID: ${curUUID}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`,'_blank','noopener')
+}
+
+// ─── TOAST ───
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400)
+}
+
+// ─── SCROLL ───
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+
+// ─── OBSERVER ───
+function initObs(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:0.1});
+  document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el))
+}
+
+// ─── RESIZE ───
+let rTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(rTimer);
+  rTimer=setTimeout(()=>applyHero(curUUID,curFamily),250)
+});
+
+// ─── INIT ───
+window.addEventListener('load',()=>{
+  document.getElementById('uuidInput').value=HERO_UUID;
+  applyHero(HERO_UUID,'flowfield');
+  setTimeout(renderShowcase,100);
+  loadMoreGallery();
+  setTimeout(renderCTA,200);
+  initObs()
+});
+</script>
+</body>
+</html>
