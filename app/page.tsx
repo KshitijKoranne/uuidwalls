@@ -537,9 +537,9 @@ export default function Home() {
   }
 
   async function signOut() {
-    await supabase.auth.signOut()
-    setUser(null); setIsPaid(false)
-    showToast('Signed out')
+    // POST to server route to clear SSR cookie properly
+    await fetch('/auth/signout', { method: 'POST' })
+    window.location.href = '/'
   }
 
   function getMyUUID() {

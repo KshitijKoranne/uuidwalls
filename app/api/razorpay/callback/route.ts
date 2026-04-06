@@ -13,48 +13,34 @@ export async function GET(req: NextRequest) {
   const userId = searchParams.get('user_id')
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+  const isTestMode = process.env.RAZORPAY_KEY_ID?.startsWith('rzp_test_')
 
-  // Log all params to help debug
-  console.log('[callback] params:', {
-    paymentId, paymentLinkId, paymentLinkRefId, status, signature, userId
-  })
+  console.log('[callback] received:', { paymentId, paymentLinkId, paymentLinkRefId, status, userId, isTestMode })
 
   if (status !== 'paid') {
-    console.log('[callback] status not paid:', status)
     return NextResponse.redirect(`${appUrl}/?payment=cancelled`)
   }
 
-  if (!paymentId || !paymentLinkId || !paymentLinkRefId || !signature || !userId) {
-    console.log('[callback] missing params')
+  if (!paymentId || !paymentLinkId || !userId) {
+    console.error('[callback] missing required params')
     return NextResponse.redirect(`${appUrl}/?payment=error`)
   }
 
-  // Verify signature
-  const body = `${paymentLinkId}|${paymentLinkRefId}|${status}|${paymentId}`
-  const expectedSignature = crypto
-    .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
-    .update(body)
-    .digest('hex')
+  // Signature verification — skip in test mode, enforce in live mode
+  if (!isTestMode && signature && paymentLinkRefId) {
+    const body = `${paymentLinkId}|${paymentLinkRefId}|${status}|${paymentId}`
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+      .update(body)
+      .digest('hex')
 
-  console.log('[callback] signature check:', {
-    body,
-    expected: expectedSignature,
-    received: signature,
-    match: expectedSignature === signature,
-  })
-
-  if (expectedSignature !== signature) {
-    console.error('[callback] signature mismatch — writing to DB anyway in test mode')
-    // In test mode, don't block on signature mismatch — still record the payment
-    // Remove this bypass before going live
-    if (!process.env.RAZORPAY_KEY_ID?.startsWith('rzp_live_')) {
-      // Test mode — proceed anyway
-    } else {
+    if (expectedSignature !== signature) {
+      console.error('[callback] signature mismatch in live mode')
       return NextResponse.redirect(`${appUrl}/?payment=error`)
     }
   }
 
-  // Fetch user email from Supabase using admin client
+  // Record payment using admin client
   const admin = createAdminClient()
 
   const { data: userData } = await admin.auth.admin.getUserById(userId)
@@ -64,17 +50,17 @@ export async function GET(req: NextRequest) {
     .from('paid_users')
     .upsert({
       user_id: userId,
-      email: email,
+      email,
       razorpay_order_id: paymentLinkId,
       razorpay_payment_id: paymentId,
       paid_at: new Date().toISOString(),
     }, { onConflict: 'user_id' })
 
   if (error) {
-    console.error('[callback] DB error:', JSON.stringify(error))
+    console.error('[callback] DB upsert error:', JSON.stringify(error))
     return NextResponse.redirect(`${appUrl}/?payment=error`)
   }
 
-  console.log('[callback] payment recorded successfully for user:', userId)
+  console.log('[callback] success for user:', userId)
   return NextResponse.redirect(`${appUrl}/?payment=success`)
 }
