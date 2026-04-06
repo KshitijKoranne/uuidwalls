@@ -347,23 +347,25 @@ export default function Home() {
 
   // ─── INIT AUTH ───
   useEffect(() => {
+    async function checkPaid(userId: string) {
+      const { data } = await supabase.from('paid_users').select('id').eq('user_id', userId).maybeSingle()
+      setIsPaid(!!data)
+    }
+
     async function init() {
       const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      if (user) {
-        const { data } = await supabase.from('paid_users').select('id').eq('user_id', user.id).single()
-        setIsPaid(!!data)
-      }
+      setUser(user ?? null)
+      if (user) await checkPaid(user.id)
       setAuthChecked(true)
     }
     init()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       const u = session?.user ?? null
       setUser(u)
+      setAuthChecked(true) // always mark checked on any auth event
       if (u) {
-        const { data } = await supabase.from('paid_users').select('id').eq('user_id', u.id).single()
-        setIsPaid(!!data)
+        await checkPaid(u.id)
       } else {
         setIsPaid(false)
       }
