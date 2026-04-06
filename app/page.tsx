@@ -886,9 +886,12 @@ export default function Home() {
       {/* ── FOOTER ── */}
       <footer style={{ background: 'var(--ink)', borderTop: '1px solid var(--p08)', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--paper)' }}>UUIDWalls</div>
-        <div style={{ display: 'flex', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
           <a href="mailto:kjrlabs9@gmail.com" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Contact</a>
           <a href="https://kjrlabs.in" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>KJR Labs</a>
+          <a href="/privacy" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Privacy</a>
+          <a href="/terms" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Terms</a>
+          <a href="/refund" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Refund</a>
         </div>
         <div style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p55)', letterSpacing: '0.04em' }}>Deterministic · Private · Universal</div>
       </footer>
@@ -939,3 +942,4 @@ function SmallCanvas({ id, data, onClick, label, sub, aspect = '4/3' }: {
     </div>
   )
 }
+
