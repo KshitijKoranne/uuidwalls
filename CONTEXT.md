@@ -77,10 +77,17 @@ proxy.ts                — session refresh middleware (Next.js proxy)
 - Chunked rendering with requestAnimationFrame to avoid blocking UI
 - Progress bar shown for slow renders (Voronoi, Flow Field)
 
-## Known issues / in progress
-- Payment recorded in DB but page not reflecting unlock after redirect — under investigation
-- Google OAuth requires test users to be added in Google Cloud Console (app not yet published)
-- Razorpay still in test mode — needs live keys when Razorpay finishes reviewing business site
+## Current status
+- Full payment flow working end-to-end (test mode) ✅
+- Google OAuth working (restricted to test users — app not yet published on Google)
+- Razorpay in test mode — waiting for Razorpay to finish reviewing business site before live keys
+
+## To go live checklist
+- [ ] Razorpay: get live keys once business site review completes
+- [ ] Razorpay: update RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Vercel to live keys
+- [ ] Google: publish OAuth app (Google Cloud Console → OAuth consent screen → Publish)
+- [ ] Google: add uuidwalls.vercel.app to authorized domains
+- [ ] Signature verification: remove test mode bypass in callback/route.ts (already enforced in live mode)
 
 ## Design system
 - Colors: --ink (#0a0908), --paper (#f0ede8), opacity variants p85/p55/p30/p15/p08/p05
