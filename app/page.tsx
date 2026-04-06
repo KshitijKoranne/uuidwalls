@@ -134,7 +134,7 @@ function drawFlowFieldChunked(canvas: HTMLCanvasElement, P: UUIDParams, w: numbe
   requestAnimationFrame(chunk)
 }
 
-function drawVoronoiChunked(canvas: HTMLCanvasElement, P: UUIDParams, w: number, h: number, onProgress: (r: number) => void, onDone: () => void) {
+function drawVoronoiChunked(canvas: HTMLCanvasElement, P: UUIDParams, w: number, h: number, onProgress: (r: number) => void, onDone: () => void, hq = false) {
   const ctx = canvas.getContext('2d')!; canvas.width = w; canvas.height = h
   const { hue, sat, lum1, lum2, accent, density, mood, seed } = P
   const rng = mkPRNG(seed)
@@ -142,7 +142,8 @@ function drawVoronoiChunked(canvas: HTMLCanvasElement, P: UUIDParams, w: number,
   const pts = Array.from({ length: count }, () => ({ x: rng() * w, y: rng() * h }))
   const cols = pts.map((_, i) => hslRgb(i % 5 === 0 ? accent : hue + (i % 4) * 18, sat, lum2 + (i / count) * (lum1 - lum2)))
   const img = ctx.createImageData(w, h); const d = img.data
-  const pxStep = Math.max(2, w / 240 | 0)
+  // hq=true: pixel-perfect (hero/download). hq=false: coarse step for thumbnails
+  const pxStep = hq ? 1 : Math.max(2, w / 240 | 0)
   const totalRows = Math.ceil(h / pxStep); let row = 0
   function chunk() {
     const endRow = Math.min(row + CHUNK_ROWS * 2, totalRows)
@@ -293,14 +294,14 @@ function drawWave(canvas: HTMLCanvasElement, P: UUIDParams, w: number, h: number
   }
 }
 
-function drawCanvas(canvas: HTMLCanvasElement, P: UUIDParams, w: number, h: number, onProgress: (r: number) => void, onDone: () => void) {
+function drawCanvas(canvas: HTMLCanvasElement, P: UUIDParams, w: number, h: number, onProgress: (r: number) => void, onDone: () => void, hq = false) {
   if (!P) return
   if (P.family === 'geometric') { drawGeometric(canvas, P, w, h); onDone(); return }
   if (P.family === 'ascii') { drawASCII(canvas, P, w, h); onDone(); return }
   if (P.family === 'mandala') { drawMandala(canvas, P, w, h); onDone(); return }
   if (P.family === 'wave') { drawWave(canvas, P, w, h); onDone(); return }
   if (P.family === 'flowfield') { drawFlowFieldChunked(canvas, P, w, h, onProgress, onDone); return }
-  if (P.family === 'voronoi') { drawVoronoiChunked(canvas, P, w, h, onProgress, onDone); return }
+  if (P.family === 'voronoi') { drawVoronoiChunked(canvas, P, w, h, onProgress, onDone, hq); return }
 }
 
 function applyWatermark(ctx: CanvasRenderingContext2D, w: number, h: number, P: UUIDParams, enabled: boolean) {
@@ -393,7 +394,8 @@ export default function Home() {
         if (myToken !== renderTokenRef.current) return
         if (withProgress && slow) setShowProgressState(false)
         setMetaText('Live · rendering')
-      }
+      },
+      true // hq: pixel-perfect Voronoi on hero
     )
   }, [])
 
@@ -499,7 +501,7 @@ export default function Home() {
           a.click(); setTimeout(() => URL.revokeObjectURL(url), 3000)
           showToast(`Downloading ${w}×${h}`)
         }, 'image/png')
-      })
+      }, true) // hq: pixel-perfect Voronoi for downloads
     } catch {
       showToast('Render failed — try a smaller size')
     }
