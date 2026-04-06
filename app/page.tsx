@@ -406,20 +406,37 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search)
     const paymentStatus = params.get('payment')
     if (paymentStatus === 'success') {
-      showToast('Payment successful! 2K & 4K downloads unlocked.')
-      supabase.auth.getUser().then(async ({ data: { user } }) => {
+      history.replaceState(null, '', window.location.pathname)
+      // Small delay to let DB write settle, then re-check paid status
+      setTimeout(async () => {
+        const { data: { user } } = await supabase.auth.getUser()
         if (user) {
-          const { data } = await supabase.from('paid_users').select('id').eq('user_id', user.id).single()
-          if (data) setIsPaid(true)
+          const { data } = await supabase.from('paid_users').select('id').eq('user_id', user.id).maybeSingle()
+          if (data) {
+            setIsPaid(true)
+            setToast('2K & 4K downloads unlocked!'); setToastVisible(true)
+            setTimeout(() => setToastVisible(false), 3000)
+          } else {
+            // Row not yet visible — retry once more after 2s
+            setTimeout(async () => {
+              const { data: d2 } = await supabase.from('paid_users').select('id').eq('user_id', user.id).maybeSingle()
+              if (d2) {
+                setIsPaid(true)
+                setToast('2K & 4K downloads unlocked!'); setToastVisible(true)
+                setTimeout(() => setToastVisible(false), 3000)
+              }
+            }, 2000)
+          }
         }
-      })
-      history.replaceState(null, '', window.location.pathname)
+      }, 500)
     } else if (paymentStatus === 'cancelled') {
-      showToast('Payment cancelled.')
       history.replaceState(null, '', window.location.pathname)
+      setToast('Payment cancelled.'); setToastVisible(true)
+      setTimeout(() => setToastVisible(false), 2400)
     } else if (paymentStatus === 'error') {
-      showToast('Payment error. Please try again or contact support.')
       history.replaceState(null, '', window.location.pathname)
+      setToast('Payment error — contact kjrlabs9@gmail.com'); setToastVisible(true)
+      setTimeout(() => setToastVisible(false), 4000)
     }
     const pu = params.get('uuid'), pf = params.get('p')
     const initUUID = (pu && pu.replace(/-/g, '').length >= 8) ? pu : HERO_UUID
