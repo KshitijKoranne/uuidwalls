@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0a0908;
+  --ink2: #141210;
+  --ink3: #1e1b18;
+  --paper: #f0ede8;
+  --p85: rgba(240,237,232,0.85);
+  --p55: rgba(240,237,232,0.55);
+  --p30: rgba(240,237,232,0.3);
+  --p15: rgba(240,237,232,0.15);
+  --p08: rgba(240,237,232,0.08);
+  --p05: rgba(240,237,232,0.05);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Outfit', sans-serif;
+  --r6: 6px; --r10: 10px; --r14: 14px;
+  --ease: 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--ink); color: var(--paper); font-family: var(--sans); overflow-x: hidden; }
+
+/* AUTH MODAL */
+.auth-backdrop {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(10,9,8,0.9); backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+}
+.auth-box {
+  background: var(--ink2); border: 1px solid var(--p15); border-radius: var(--r14);
+  padding: 2.5rem 2rem; max-width: 400px; width: 100%;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7); text-align: center; position: relative;
+}
+.auth-title { font-family: var(--serif); font-size: 1.9rem; font-weight: 700; color: var(--paper); letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.auth-sub { font-size: 0.875rem; color: var(--p55); line-height: 1.65; margin-bottom: 1.75rem; font-weight: 300; }
+.auth-price-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--p05); border: 1px solid var(--p15); border-radius: 20px;
+  padding: 6px 16px; margin-bottom: 1.75rem;
+  font-family: var(--mono); font-size: 11px; color: var(--p85); letter-spacing: 0.05em;
+}
+.auth-price-badge strong { color: var(--paper); font-size: 14px; }
+.btn-google {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--paper); color: var(--ink); border: none; border-radius: var(--r6);
+  padding: 14px 20px; font-family: var(--sans); font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: opacity var(--ease); margin-bottom: 0.75rem;
+}
+.btn-google:hover { opacity: 0.88; }
+.btn-email {
+  width: 100%; background: transparent; color: var(--p55); border: 1px solid var(--p15);
+  border-radius: var(--r6); padding: 12px 20px; font-family: var(--sans); font-size: 13px;
+  cursor: pointer; transition: all var(--ease);
+}
+.btn-email:hover { background: var(--p08); color: var(--paper); border-color: var(--p30); }
+.auth-note { font-family: var(--mono); font-size: 9px; color: var(--p30); letter-spacing: 0.05em; margin-top: 1.25rem; line-height: 1.7; }
+.auth-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: transparent; border: none; color: var(--p30);
+  font-size: 1.5rem; cursor: pointer; line-height: 1; transition: color var(--ease); padding: 4px 8px;
+}
+.auth-close:hover { color: var(--paper); }
+
+/* PAY MODAL */
+.pay-features { list-style: none; text-align: left; margin-bottom: 1.75rem; }
+.pay-features li {
+  font-size: 0.875rem; color: var(--p85); padding: 8px 0;
+  border-bottom: 1px solid var(--p08); display: flex; align-items: center; gap: 10px; font-weight: 300;
+}
+.pay-features li:last-child { border-bottom: none; }
+.pay-features li::before { content: '✓'; color: #4ade80; font-size: 11px; flex-shrink: 0; }
+.btn-pay {
+  width: 100%; background: var(--paper); color: var(--ink); border: none;
+  border-radius: var(--r6); padding: 16px 20px; font-family: var(--sans);
+  font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity var(--ease); margin-bottom: 0.75rem;
+}
+.btn-pay:hover { opacity: 0.88; }
+.btn-pay:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* UNLOCK BADGE */
+.unlock-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25);
+  border-radius: 20px; padding: 5px 13px;
+  font-family: var(--mono); font-size: 10px; color: #4ade80; letter-spacing: 0.06em;
+}
+
+/* EMAIL MAGIC LINK */
+.email-input-wrap { margin-bottom: 0.75rem; }
+.email-input {
+  width: 100%; background: var(--p05); border: 1px solid var(--p15); border-radius: var(--r6);
+  padding: 12px 14px; font-family: var(--mono); font-size: 13px; color: var(--paper);
+  outline: none; transition: border-color var(--ease);
+}
+.email-input:focus { border-color: var(--p30); }
+.email-input::placeholder { color: var(--p30); }
