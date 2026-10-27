@@ -3,7 +3,7 @@ import { FAMILIES, PARAM_INPUTS, RENDER_CASES, RENDER_UUIDS, lcg } from './fixtu
 
 // The surface both engines (legacy v1 and the new lib/wall) are driven through.
 export interface EngineUnderTest {
-  parseUUID(uuid: string, forceFamily?: string): Record<string, number | string>
+  parseUUID(uuid: string, forceFamily?: string): { family: string; hue: number; sat: number; lum1: number; lum2: number; accent: number; density: number; angle: number; mood: number; seed: number }
   uuidSeed(uuid: string): number
   mkPRNG(seed: number): () => number
   mkNoise(seed: number): (x: number, y: number) => number

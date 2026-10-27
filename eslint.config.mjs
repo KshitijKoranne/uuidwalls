@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Verbatim v1 reference engine for the golden tests. Never edit or lint it.
+    "tests/legacy/**",
   ]),
 ]);
 
