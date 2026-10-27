@@ -1,24 +1,14 @@
 'use client'
 
-import { useState } from 'react'
 import { FAMS, FAM_LABEL } from '@/lib/wall'
-import { PRICE, isPaidSize, type DlSizeKey } from '@/lib/payments/catalog'
 import { useStudio } from './context'
+import DownloadMenu from './DownloadMenu'
 import WallCanvas from './WallCanvas'
 
 const ghostBtn = { display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: '1px solid var(--p15)', borderRadius: 'var(--r6)', padding: '7px 13px', fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p55)', cursor: 'pointer' } as const
 
 export default function Hero() {
   const s = useStudio()
-  const [dlMenuOpen, setDlMenuOpen] = useState(false)
-
-  const options: Array<{ key: DlSizeKey; label: string; dim: string }> = [
-    { key: 'screen', label: 'Screen resolution', dim: s.dimScreen },
-    { key: 'mobile', label: 'Mobile', dim: '1290×2796' },
-    { key: '2k', label: `2K ${!s.isPaid ? `— unlock ${PRICE.display}` : ''}`, dim: '2560×1440' },
-    { key: '4k', label: `4K ${!s.isPaid ? `— unlock ${PRICE.display}` : ''}`, dim: '3840×2160' },
-  ]
-
   return (
     <section id="hero" style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', paddingTop: 58 }}>
       <WallCanvas />
@@ -80,20 +70,7 @@ export default function Hero() {
               <button onClick={s.getMyUUID} style={{ ...ghostBtn, letterSpacing: '0.05em' }}>Get my UUID</button>
               <button onClick={s.toggleWatermark} aria-pressed={s.wmEnabled} style={ghostBtn}>Watermark: {s.wmEnabled ? 'On' : 'Off'}</button>
 
-              <div style={{ position: 'relative' }}>
-                <button onClick={() => setDlMenuOpen(o => !o)} aria-expanded={dlMenuOpen} aria-haspopup="true" style={ghostBtn}>↓ Download</button>
-                {dlMenuOpen && (
-                  <div style={{ position: 'absolute', bottom: 'calc(100% + 6px)', right: 0, background: 'var(--ink2)', border: '1px solid var(--p15)', borderRadius: 'var(--r10)', padding: 6, minWidth: 220, boxShadow: '0 8px 32px rgba(0,0,0,0.6)', zIndex: 50 }}>
-                    {options.map(opt => (
-                      <div key={opt.key} onClick={() => { setDlMenuOpen(false); s.download(opt.key) }}
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', borderRadius: 'var(--r6)', cursor: 'pointer', fontFamily: 'var(--mono)', fontSize: '10px', color: isPaidSize(opt.key) && !s.isPaid ? 'var(--p30)' : 'var(--p85)', gap: 16, whiteSpace: 'nowrap' }}>
-                        <span style={{ letterSpacing: '0.04em' }}>{opt.label}</span>
-                        <span style={{ color: 'var(--p30)', fontSize: 9 }}>{opt.dim}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <DownloadMenu />
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ type Scope = {
   onmessage: ((e: MessageEvent<ToWorker>) => void) | null
 }
 const scope = self as unknown as Scope
+let currentId = -1
 const cancelled = new Set<number>()
 
 function offscreenSupported() {
@@ -20,8 +21,9 @@ function offscreenSupported() {
 scope.onmessage = async (e: MessageEvent<ToWorker>) => {
   const m = e.data
   if (m.type === 'probe') { scope.postMessage({ type: 'probe', ok: offscreenSupported() }); return }
-  if (m.type === 'cancel') { cancelled.add(m.id); return }
+  if (m.type === 'cancel') { if (m.id === currentId) cancelled.add(m.id); return }
   const { id, spec } = m
+  currentId = id
   try {
     const surface = await runRender(spec, {
       createSurface: (w, h) => {
@@ -45,5 +47,6 @@ scope.onmessage = async (e: MessageEvent<ToWorker>) => {
     else scope.postMessage({ type: 'error', id, message: err instanceof Error ? err.message : 'Render failed' })
   } finally {
     cancelled.delete(id)
+    if (currentId === id) currentId = -1
   }
 }

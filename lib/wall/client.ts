@@ -106,6 +106,9 @@ class MainExecutor implements Executor {
       if (!blob) throw new Error('Could not generate image')
       return { kind: 'png', png: blob }
     }
+    // Hand back a bitmap whenever possible: a canvas that already shows a worker result is bound to
+    // 'bitmaprenderer' and can no longer give out a 2d context.
+    if (typeof createImageBitmap === 'function') return { kind: 'bitmap', bitmap: await createImageBitmap(surface.canvas as HTMLCanvasElement) }
     return { kind: 'surface', surface }
   }
   cancel() { /* noticed through job.cancelled at the next chunk */ }

@@ -17,20 +17,22 @@ const nextConfig: NextConfig = {
           // Basic permissions policy — disable unused browser features
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           // Content Security Policy
-          // - Scripts: self + Razorpay checkout + Google Fonts/APIs
+          // - Scripts: self only (payment is a redirect to the provider's hosted page, no embedded checkout)
+          // - Workers: same-origin module worker for rendering
           // - Styles: self + unsafe-inline (required for inline Next.js styles) + Google Fonts
-          // - Frames: Razorpay iframe for payment
+          // - Frames: none
           // - Images: self + data URIs (canvas blob downloads)
           {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com",
+              "script-src 'self' 'unsafe-inline'",
+              "worker-src 'self'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob:",
-              "connect-src 'self' https://*.supabase.co https://api.razorpay.com",
-              "frame-src https://api.razorpay.com https://checkout.razorpay.com",
+              "connect-src 'self' https://*.supabase.co",
+              "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
