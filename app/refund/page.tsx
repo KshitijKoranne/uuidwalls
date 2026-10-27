@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export const metadata = {
   title: 'Refund Policy — UUIDWalls',
   description: 'Refund Policy for UUIDWalls by KJR Labs.',
@@ -8,9 +10,9 @@ export default function RefundPage() {
     <main style={{ background: 'var(--ink)', minHeight: '100vh', padding: '4rem 2rem' }}>
       <div style={{ maxWidth: '680px', margin: '0 auto' }}>
 
-        <a href="/" style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em', display: 'inline-block', marginBottom: '3rem' }}>
+        <Link href="/" style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em', display: 'inline-block', marginBottom: '3rem' }}>
           &larr; uuidwalls.vercel.app
-        </a>
+        </Link>
 
         <h1 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, color: 'var(--paper)', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
           Refund Policy
@@ -56,7 +58,7 @@ export default function RefundPage() {
         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--p08)', flexWrap: 'wrap' }}>
           <a href="/privacy" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Privacy Policy</a>
           <a href="/terms" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Terms of Service</a>
-          <a href="/" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Home</a>
+          <Link href="/" style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p30)', textDecoration: 'none', letterSpacing: '0.06em' }}>Home</Link>
         </div>
 
       </div>
