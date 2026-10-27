@@ -17,7 +17,7 @@ export default function PayModal({ userEmail, onClose }: PayModalProps) {
     setError('')
 
     try {
-      const res = await fetch('/api/razorpay/create-order', { method: 'POST' })
+      const res = await fetch('/api/checkout', { method: 'POST' })
       const data = await res.json()
 
       if (!res.ok) {
@@ -30,9 +30,8 @@ export default function PayModal({ userEmail, onClose }: PayModalProps) {
         return
       }
 
-      // Redirect to Razorpay hosted payment page
-      // Razorpay will redirect back to our callback URL after payment
-      window.location.href = data.paymentUrl
+      // Hosted payment page of the active provider; it sends the browser back to /api/checkout/return
+      window.location.href = data.url
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

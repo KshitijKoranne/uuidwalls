@@ -74,3 +74,42 @@ test('a huge render request is refused instead of crashing the tab', async ({ pa
   const msg = await page.evaluate(async () => { try { await window.__lab.hash('worker', { uuid: 'a', fam: 'wave', w: 9000, h: 9000 }); return 'rendered' } catch (e) { return String(e) } })
   expect(msg).toContain('too large')
 })
+
+test('download menu works from the keyboard: Enter opens, Tab reaches the sizes, Esc closes and returns focus', async ({ page }) => {
+  await page.goto(`/?uuid=${HERO}&p=geometric`)
+  await expect.poll(() => painted(page, '#hero canvas'), { timeout: 15_000 }).toBeGreaterThan(0.9)
+  const trigger = page.getByRole('button', { name: /Download/ })
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('button', { name: /Screen resolution/ })).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+  await expect(trigger).toBeFocused()
+  // outside click closes too
+  await trigger.click()
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  await page.mouse.click(5, 300)
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+  // pick a size with Enter only
+  await trigger.focus(); await page.keyboard.press('Enter'); await page.keyboard.press('Tab')
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.keyboard.press('Enter')])
+  expect(dl.suggestedFilename()).toContain('-screen.png')
+})
+
+test('security headers: CSP allows the render worker and no longer lists the Razorpay checkout script', async ({ request }) => {
+  const csp = (await request.get('/')).headers()['content-security-policy']
+  expect(csp).toContain("worker-src 'self'")
+  expect(csp).not.toContain('checkout.razorpay.com')
+  expect(csp).toContain("frame-src 'none'")
+})
+
+test('payment API: signed-out checkout is refused, wrong origin is refused, webhook is not enabled for Razorpay', async ({ request }) => {
+  expect((await request.post('/api/checkout')).status()).toBe(401)
+  expect((await request.post('/api/checkout', { headers: { origin: 'https://evil.example' } })).status()).toBe(403)
+  expect((await request.post('/api/payments/webhook', { data: '{}' })).status()).toBe(501)
+  const old = await request.get('/api/razorpay/callback?razorpay_payment_link_status=cancelled', { maxRedirects: 0 })
+  expect(old.status()).toBe(307)
+  expect(old.headers()['location']).toContain('payment=cancelled')
+})
