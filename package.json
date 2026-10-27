@@ -9,7 +9,10 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:golden:regen": "GEN_GOLDENS=1 vitest run tests/golden.gen.test.ts"
+    "test:golden:regen": "GEN_GOLDENS=1 vitest run tests/golden.gen.test.ts",
+    "build:e2e": "NEXT_PUBLIC_E2E=1 next build",
+    "test:e2e": "npm run build:e2e && playwright test",
+    "test:perf": "PERF=1 playwright test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",
@@ -20,6 +23,7 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
