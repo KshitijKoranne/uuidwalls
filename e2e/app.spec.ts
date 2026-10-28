@@ -113,3 +113,24 @@ test('payment API: signed-out checkout is refused, wrong origin is refused, webh
   expect(old.status()).toBe(307)
   expect(old.headers()['location']).toContain('payment=cancelled')
 })
+
+test('dialogs are real modals: keyboard opens, focus moves inside and stays, Esc closes and focus returns to the trigger', async ({ page }) => {
+  await page.goto(`/?uuid=${HERO}&p=geometric`)
+  await expect.poll(() => painted(page, '#hero canvas'), { timeout: 15_000 }).toBeGreaterThan(0.9)
+  const trigger = page.getByRole('button', { name: /Download/ })
+  await trigger.focus(); await page.keyboard.press('Enter')
+  await page.keyboard.press('Tab'); await page.keyboard.press('Tab'); await page.keyboard.press('Tab') // Screen, Mobile, 2K
+  await page.keyboard.press('Enter')
+  const dialog = page.getByRole('dialog', { name: /Unlock 2K & 4K Downloads/ })
+  await expect(dialog).toBeVisible()
+  expect(await page.evaluate(() => !!document.activeElement?.closest('dialog'))).toBe(true) // focus moved into the modal on open
+  for (let i = 0; i < 8; i++) {
+    // The page behind is inert: Tab may reach the browser's own UI, never the page content under the modal.
+    expect(await page.evaluate(() => !document.activeElement?.closest('main, header, footer'))).toBe(true)
+    await page.keyboard.press('Tab')
+  }
+  await page.locator('dialog').getByRole('button', { name: 'Close' }).focus()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+})

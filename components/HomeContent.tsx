@@ -1,5 +1,5 @@
 import Hero from '@/components/studio/Hero'
-import Nav from '@/components/studio/Nav'
+import TopBar from '@/components/studio/TopBar'
 import StudioProvider from '@/components/studio/StudioProvider'
 import Cta from '@/components/sections/Cta'
 import Explore from '@/components/sections/Explore'
@@ -18,7 +18,9 @@ export default function HomeContent({ initialToken }: { initialToken?: string })
     <StudioProvider initialToken={initialToken}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(webApplicationLd(siteUrl())) }} />
       {!initialToken && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(faqPageLd()) }} />}
-      <Nav />
+      <a className="skip" href="#main">Skip to content</a>
+      <TopBar />
+      <main id="main" tabIndex={-1}>
       <Hero />
       <HowItWorks />
       <Showcase />
@@ -27,6 +29,7 @@ export default function HomeContent({ initialToken }: { initialToken?: string })
       <Pricing />
       <Faq />
       <Cta />
+      </main>
       <Footer />
     </StudioProvider>
   )

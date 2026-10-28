@@ -5,7 +5,7 @@ import { useDisclosure } from '@/hooks/useDisclosure'
 import { PRICE, isPaidSize, type DlSizeKey } from '@/lib/payments/catalog'
 import { useStudio } from './context'
 
-const ghostBtn = { display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: '1px solid var(--p15)', borderRadius: 'var(--r6)', padding: '7px 13px', fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p55)', cursor: 'pointer' } as const
+const ghostBtn = { display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', padding: '7px 13px', fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--faint)', cursor: 'pointer' } as const
 
 /**
  * Disclosure pattern: the trigger toggles a list of real buttons. Keyboard: Tab/Enter/Space work,
@@ -28,12 +28,12 @@ export default function DownloadMenu() {
     <div ref={root} style={{ position: 'relative' }}>
       <button ref={trigger} onClick={() => setOpen(o => !o)} aria-expanded={open} aria-controls={open ? panelId : undefined} style={ghostBtn}>↓ Download</button>
       {open && (
-        <div id={panelId} role="group" aria-label="Download size" style={{ position: 'absolute', bottom: 'calc(100% + 6px)', right: 0, background: 'var(--ink2)', border: '1px solid var(--p15)', borderRadius: 'var(--r10)', padding: 6, minWidth: 220, boxShadow: '0 8px 32px rgba(0,0,0,0.6)', zIndex: 50 }}>
+        <div id={panelId} role="group" aria-label="Download size" style={{ position: 'absolute', bottom: 'calc(100% + 6px)', right: 0, background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-md)', padding: 6, minWidth: 220, boxShadow: '0 8px 32px rgba(0,0,0,0.6)', zIndex: 50 }}>
           {options.map(opt => (
-            <button key={opt.key} type="button" onClick={() => { setOpen(false); s.download(opt.key) }}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '9px 12px', borderRadius: 'var(--r6)', cursor: 'pointer', fontFamily: 'var(--mono)', fontSize: '10px', color: isPaidSize(opt.key) && !s.isPaid ? 'var(--p30)' : 'var(--p85)', gap: 16, whiteSpace: 'nowrap' }}>
+            <button key={opt.key} type="button" onClick={() => { setOpen(false); trigger.current?.focus(); s.download(opt.key) }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '9px 12px', borderRadius: 'var(--r-sm)', cursor: 'pointer', fontFamily: 'var(--mono)', fontSize: '10px', color: isPaidSize(opt.key) && !s.isPaid ? 'var(--faint)' : 'var(--soft)', gap: 16, whiteSpace: 'nowrap' }}>
               <span style={{ letterSpacing: '0.04em' }}>{opt.label}</span>
-              <span style={{ color: 'var(--p30)', fontSize: 9 }}>{opt.dim}</span>
+              <span style={{ color: 'var(--faint)', fontSize: 9 }}>{opt.dim}</span>
             </button>
           ))}
         </div>

@@ -24,18 +24,18 @@ export default function Cta() {
   }, [])
 
   return (
-    <section style={{ background: 'var(--ink2)', position: 'relative', overflow: 'hidden', textAlign: 'center', padding: '8rem 1.5rem' }}>
+    <section style={{ background: 'var(--surface-1)', position: 'relative', overflow: 'hidden', textAlign: 'center', padding: '8rem 1.5rem' }}>
       <canvas ref={canvasRef} aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.1 }} />
       <div style={{ position: 'relative', zIndex: 2 }}>
-        <h2 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(2.5rem,6vw,5rem)', fontWeight: 700, color: 'var(--paper)', letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: '1rem' }}>
+        <h2 style={{ fontFamily: 'var(--font)', fontSize: 'clamp(2.5rem,6vw,5rem)', fontWeight: 700, color: 'var(--ink)', letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: '1rem' }}>
           What does your<br /><em style={{ fontStyle: 'italic', fontWeight: 400 }}>device look like?</em>
         </h2>
-        <p style={{ fontSize: '1rem', fontWeight: 300, color: 'var(--p85)', marginBottom: '2.5rem' }}>No install. Enter your UUID, pick your pattern, download your wall.</p>
+        <p style={{ fontSize: '1rem', fontWeight: 300, color: 'var(--soft)', marginBottom: '2.5rem' }}>No install. Enter your UUID, pick your pattern, download your wall.</p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ background: 'var(--paper)', color: 'var(--ink)', border: 'none', borderRadius: 'var(--r6)', padding: '16px 32px', fontFamily: 'var(--sans)', fontSize: '15px', fontWeight: 500, cursor: 'pointer' }}>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ background: 'var(--ink)', color: 'var(--base)', border: 'none', borderRadius: 'var(--r-sm)', padding: '16px 32px', fontFamily: 'var(--font)', fontSize: '15px', fontWeight: 500, cursor: 'pointer' }}>
             Generate my wall
           </button>
-          <button onClick={shareOnX} style={{ background: 'transparent', color: 'var(--p85)', border: '1px solid var(--p15)', borderRadius: 'var(--r6)', padding: '16px 24px', fontFamily: 'var(--sans)', fontSize: '15px', fontWeight: 400, cursor: 'pointer' }}>
+          <button onClick={shareOnX} style={{ background: 'transparent', color: 'var(--soft)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', padding: '16px 24px', fontFamily: 'var(--font)', fontSize: '15px', fontWeight: 400, cursor: 'pointer' }}>
             Share on X
           </button>
         </div>

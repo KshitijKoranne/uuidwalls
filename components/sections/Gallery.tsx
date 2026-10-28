@@ -11,7 +11,7 @@ export default function Gallery() {
   const { loadWall } = useStudio()
   const [shown, setShown] = useState(4)
   return (
-    <section style={{ padding: '7rem 1.5rem', background: 'var(--ink)' }}>
+    <section style={{ padding: '7rem 1.5rem', background: 'var(--base)' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         <Eyebrow>Community walls</Eyebrow>
         <H2>Walls from real machines</H2>
@@ -23,7 +23,7 @@ export default function Gallery() {
         </div>
         {shown < GALLERY.length && (
           <div style={{ textAlign: 'center' }}>
-            <button onClick={() => setShown(n => n + 4)} style={{ background: 'transparent', border: '1px solid var(--p15)', borderRadius: 'var(--r6)', padding: '12px 28px', fontFamily: 'var(--sans)', fontSize: '13px', color: 'var(--p85)', cursor: 'pointer' }}>Load more walls</button>
+            <button onClick={() => setShown(n => n + 4)} style={{ background: 'transparent', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', padding: '12px 28px', fontFamily: 'var(--font)', fontSize: '13px', color: 'var(--soft)', cursor: 'pointer' }}>Load more walls</button>
           </div>
         )}
       </div>

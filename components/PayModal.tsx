@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
+import Dialog from '@/components/ui/Dialog'
+import { PRICE } from '@/lib/payments/catalog'
 
 interface PayModalProps {
   userEmail: string
@@ -11,6 +13,7 @@ interface PayModalProps {
 export default function PayModal({ userEmail, onClose }: PayModalProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const titleId = useId()
 
   async function handlePay() {
     setLoading(true)
@@ -32,7 +35,6 @@ export default function PayModal({ userEmail, onClose }: PayModalProps) {
 
       // Hosted payment page of the active provider; it sends the browser back to /api/checkout/return
       window.location.href = data.url
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       setLoading(false)
@@ -40,41 +42,33 @@ export default function PayModal({ userEmail, onClose }: PayModalProps) {
   }
 
   return (
-    <div className="auth-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="auth-box">
-        <button className="auth-close" onClick={onClose} aria-label="Close">×</button>
+    <Dialog onClose={onClose} labelledBy={titleId}>
+      <h2 id={titleId}>Unlock Full Resolution</h2>
+      <p>One payment. Yours forever. On every device.</p>
+      <p style={{ color: 'var(--ink)' }}><b>{PRICE.display}</b> once · Lifetime access</p>
 
-        <div className="auth-title">Unlock Full Resolution</div>
-        <p className="auth-sub">One payment. Yours forever. On every device.</p>
+      <ul style={{ listStyle: 'none', display: 'grid', gap: 8, margin: '0 0 16px', color: 'var(--soft)' }}>
+        <li>✓ 2K downloads — 2560×1440, crisp on any monitor</li>
+        <li>✓ 4K downloads — 3840×2160, Retina &amp; OLED ready</li>
+        <li>✓ All 6 pattern families included</li>
+        <li>✓ Works for every UUID you generate, forever</li>
+        <li>✓ Watermark-free export option</li>
+      </ul>
 
-        <div className="auth-price-badge">
-          One-time · <strong>₹99</strong> · Lifetime access
+      {error && (
+        <div className="helper err" role="alert" style={{ marginTop: 0, marginBottom: 12 }}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" /></svg>
+          <span>{error}</span>
         </div>
+      )}
 
-        <ul className="pay-features">
-          <li>2K downloads — 2560×1440, crisp on any monitor</li>
-          <li>4K downloads — 3840×2160, Retina & OLED ready</li>
-          <li>All 6 pattern families included</li>
-          <li>Works for every UUID you generate, forever</li>
-          <li>Watermark-free export option</li>
-        </ul>
+      <button className="btn accent lg" type="button" style={{ width: '100%' }} onClick={handlePay} disabled={loading} aria-busy={loading}>
+        {loading ? 'Opening payment page…' : `Pay ${PRICE.display} — Unlock Forever`}
+      </button>
 
-        {error && (
-          <p style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: '#f87171', marginBottom: '1rem', lineHeight: '1.6' }}>
-            {error}
-          </p>
-        )}
-
-        <button className="btn-pay" onClick={handlePay} disabled={loading}>
-          {loading ? 'Opening payment page…' : 'Pay ₹99 — Unlock Forever'}
-        </button>
-
-        <p style={{ fontFamily: 'var(--mono)', fontSize: '9px', color: 'var(--p30)', letterSpacing: '0.04em', lineHeight: '1.7' }}>
-          Secured by Razorpay · UPI, Cards, NetBanking, Wallets<br />
-          You will be redirected to Razorpay&apos;s secure payment page<br />
-          Signed in as {userEmail}
-        </p>
-      </div>
-    </div>
+      <p className="caption" style={{ margin: '12px 0 0' }}>
+        Secured by Razorpay · UPI, Cards, NetBanking, Wallets. You will be redirected to Razorpay&apos;s secure payment page. Signed in as {userEmail}
+      </p>
+    </Dialog>
   )
 }

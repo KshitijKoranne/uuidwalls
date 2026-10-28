@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
           // Content Security Policy
           // - Scripts: self only (payment is a redirect to the provider's hosted page, no embedded checkout)
           // - Workers: same-origin module worker for rendering
-          // - Styles: self + unsafe-inline (required for inline Next.js styles) + Google Fonts
+          // - Styles: self + unsafe-inline (required for inline Next.js styles); fonts are self-hosted, nothing third-party
           // - Frames: none
           // - Images: self + data URIs (canvas blob downloads)
           {
@@ -31,8 +31,8 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline'",
               "worker-src 'self'",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com",
+              "style-src 'self' 'unsafe-inline'",
+              "font-src 'self'",
               "img-src 'self' data: blob:",
               "connect-src 'self' https://*.supabase.co",
               "frame-src 'none'",

@@ -18,7 +18,7 @@ export default function Explore() {
     return () => clearTimeout(t)
   }, [])
   return (
-    <section style={{ padding: '7rem 1.5rem', background: 'var(--ink3)' }}>
+    <section style={{ padding: '7rem 1.5rem', background: 'var(--surface-2)' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         <Eyebrow>Explore mode</Eyebrow>
         <H2>Not sure where to start?</H2>
@@ -28,7 +28,7 @@ export default function Explore() {
             <WallThumb key={d.uuid} data={d} label={FAM_LABEL[d.fam]} aspect="16/10" onClick={() => loadWall(d.uuid, d.fam)} />
           ))}
         </div>
-        <button onClick={() => setItems(six())} style={{ background: 'transparent', border: '1px solid var(--p15)', borderRadius: 'var(--r6)', padding: '11px 22px', fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--p55)', cursor: 'pointer', letterSpacing: '0.06em' }}>
+        <button onClick={() => setItems(six())} style={{ background: 'transparent', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', padding: '11px 22px', fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--faint)', cursor: 'pointer', letterSpacing: '0.06em' }}>
           ↻ Shuffle six new walls
         </button>
       </div>

@@ -33,13 +33,13 @@ export default function WallThumb({ data, onClick, label, sub, aspect = '4/3' }:
   }, [data])
 
   return (
-    <div onClick={onClick} style={{ position: 'relative', overflow: 'hidden', aspectRatio: aspect, cursor: 'pointer', background: 'var(--ink2)', transition: 'transform 0.3s ease' }}
+    <div onClick={onClick} style={{ position: 'relative', overflow: 'hidden', aspectRatio: aspect, cursor: 'pointer', background: 'var(--surface-1)', transition: 'transform 0.3s ease' }}
       onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
       onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}>
       <canvas ref={canvasRef} role="img" aria-label={`${label} wall`} style={{ width: '100%', height: '100%', display: 'block' }} />
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent,rgba(10,9,8,0.92))', padding: '1.5rem 1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-        {sub && <div style={{ fontFamily: 'var(--mono)', fontSize: '8px', color: 'var(--p30)', letterSpacing: '0.04em', marginBottom: 3 }}>{sub}</div>}
-        <div style={{ fontFamily: 'var(--serif)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--paper)' }}>{label}</div>
+        {sub && <div style={{ fontFamily: 'var(--mono)', fontSize: '8px', color: 'var(--faint)', letterSpacing: '0.04em', marginBottom: 3 }}>{sub}</div>}
+        <div style={{ fontFamily: 'var(--font)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--ink)' }}>{label}</div>
       </div>
     </div>
   )
