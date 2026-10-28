@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // Native canvas for the per-wall share image; its font file must ship with that route's function.
+  serverExternalPackages: ['@napi-rs/canvas'],
+  outputFileTracingIncludes: { '/w/[token]/og.jpg': ['./public/fonts/**/*'] },
   async headers() {
     return [
       {
@@ -17,20 +20,22 @@ const nextConfig: NextConfig = {
           // Basic permissions policy — disable unused browser features
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           // Content Security Policy
-          // - Scripts: self + Razorpay checkout + Google Fonts/APIs
-          // - Styles: self + unsafe-inline (required for inline Next.js styles) + Google Fonts
-          // - Frames: Razorpay iframe for payment
+          // - Scripts: self only (payment is a redirect to the provider's hosted page, no embedded checkout)
+          // - Workers: same-origin module worker for rendering
+          // - Styles: self + unsafe-inline (required for inline Next.js styles); fonts are self-hosted, nothing third-party
+          // - Frames: none
           // - Images: self + data URIs (canvas blob downloads)
           {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com",
+              "script-src 'self' 'unsafe-inline'",
+              "worker-src 'self'",
+              "style-src 'self' 'unsafe-inline'",
+              "font-src 'self'",
               "img-src 'self' data: blob:",
-              "connect-src 'self' https://*.supabase.co https://api.razorpay.com",
-              "frame-src https://api.razorpay.com https://checkout.razorpay.com",
+              "connect-src 'self' https://*.supabase.co",
+              "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

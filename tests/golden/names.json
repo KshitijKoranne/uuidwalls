@@ -1,0 +1,242 @@
+{
+ "0": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "f47ac10b-58cc-4372-a567-0e02b2c3d479": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "a1b2c3d4-e5f6-7890-abcd-ef1234567890": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "deadbeef-cafe-4abe-b00d-123456789abc": {
+  "flowfield": "Violet Flow",
+  "voronoi": "Violet Mosaic",
+  "geometric": "Violet Facets",
+  "ascii": "Violet Glyphs",
+  "mandala": "Violet Bloom",
+  "wave": "Violet Tide"
+ },
+ "1a2b3c4d-5e6f-4789-9abc-def012345678": {
+  "flowfield": "Rose Flow",
+  "voronoi": "Rose Mosaic",
+  "geometric": "Rose Facets",
+  "ascii": "Rose Glyphs",
+  "mandala": "Rose Bloom",
+  "wave": "Rose Tide"
+ },
+ "9f8e7d6c-5b4a-4392-8170-0f1e2d3c4b5a": {
+  "flowfield": "Citrine Flow",
+  "voronoi": "Citrine Mosaic",
+  "geometric": "Citrine Facets",
+  "ascii": "Citrine Glyphs",
+  "mandala": "Citrine Bloom",
+  "wave": "Citrine Tide"
+ },
+ "c0ffee00-1337-4abc-def0-123456789abc": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "550e8400-e29b-41d4-a716-446655440000": {
+  "flowfield": "Orchid Flow",
+  "voronoi": "Orchid Mosaic",
+  "geometric": "Orchid Facets",
+  "ascii": "Orchid Glyphs",
+  "mandala": "Orchid Bloom",
+  "wave": "Orchid Tide"
+ },
+ "6ba7b810-9dad-11d1-80b4-00c04fd430c8": {
+  "flowfield": "Rose Flow",
+  "voronoi": "Rose Mosaic",
+  "geometric": "Rose Facets",
+  "ascii": "Rose Glyphs",
+  "mandala": "Rose Bloom",
+  "wave": "Rose Tide"
+ },
+ "00000000-0000-0000-0000-000000000000": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "ffffffff-ffff-ffff-ffff-ffffffffffff": {
+  "flowfield": "Amber Flow",
+  "voronoi": "Amber Mosaic",
+  "geometric": "Amber Facets",
+  "ascii": "Amber Glyphs",
+  "mandala": "Amber Bloom",
+  "wave": "Amber Tide"
+ },
+ "F47AC10B-58CC-4372-A567-0E02B2C3D479": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "F47AC10B58CC4372A5670E02B2C3D479": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "3d813cbb-47fb-32ba-91df-831e1593ac29": {
+  "flowfield": "Citrine Flow",
+  "voronoi": "Citrine Mosaic",
+  "geometric": "Citrine Facets",
+  "ascii": "Citrine Glyphs",
+  "mandala": "Citrine Bloom",
+  "wave": "Citrine Tide"
+ },
+ "b45a70b0-abad-4083-a8b5-cd7df9c4e342": {
+  "flowfield": "Citrine Flow",
+  "voronoi": "Citrine Mosaic",
+  "geometric": "Citrine Facets",
+  "ascii": "Citrine Glyphs",
+  "mandala": "Citrine Bloom",
+  "wave": "Citrine Tide"
+ },
+ "e9f77540-1be9-4432-8c29-c12b10ffb1f3": {
+  "flowfield": "Jade Flow",
+  "voronoi": "Jade Mosaic",
+  "geometric": "Jade Facets",
+  "ascii": "Jade Glyphs",
+  "mandala": "Jade Bloom",
+  "wave": "Jade Tide"
+ },
+ "4e56de08-d67e-4c5a-b0e8-3c1e2f4a5b6c": {
+  "flowfield": "Rose Flow",
+  "voronoi": "Rose Mosaic",
+  "geometric": "Rose Facets",
+  "ascii": "Rose Glyphs",
+  "mandala": "Rose Bloom",
+  "wave": "Rose Tide"
+ },
+ "7c9e6679-7425-40de-944b-e07fc1f90ae7": {
+  "flowfield": "Orchid Flow",
+  "voronoi": "Orchid Mosaic",
+  "geometric": "Orchid Facets",
+  "ascii": "Orchid Glyphs",
+  "mandala": "Orchid Bloom",
+  "wave": "Orchid Tide"
+ },
+ "9c858900-8a4d-11d1-8f14-001b62e03e77": {
+  "flowfield": "Jade Flow",
+  "voronoi": "Jade Mosaic",
+  "geometric": "Jade Facets",
+  "ascii": "Jade Glyphs",
+  "mandala": "Jade Bloom",
+  "wave": "Jade Tide"
+ },
+ "abcdef12": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "abcdef1": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "  f47ac10b-58cc-4372-a567-0e02b2c3d479  ": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "f47ac10b-58cc-4372-a567-0e02b2c3d479-extra-tail": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "zzzz-hello-world": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "not a uuid at all": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "": {
+  "flowfield": "Ember Flow",
+  "voronoi": "Ember Mosaic",
+  "geometric": "Ember Facets",
+  "ascii": "Ember Glyphs",
+  "mandala": "Ember Bloom",
+  "wave": "Ember Tide"
+ },
+ "ä-ö-ü-ß-0123456789abcdef": {
+  "flowfield": "Moss Flow",
+  "voronoi": "Moss Mosaic",
+  "geometric": "Moss Facets",
+  "ascii": "Moss Glyphs",
+  "mandala": "Moss Bloom",
+  "wave": "Moss Tide"
+ },
+ "{F47AC10B-58CC-4372-A567-0E02B2C3D479}": {
+  "flowfield": "Lime Flow",
+  "voronoi": "Lime Mosaic",
+  "geometric": "Lime Facets",
+  "ascii": "Lime Glyphs",
+  "mandala": "Lime Bloom",
+  "wave": "Lime Tide"
+ },
+ "urn:uuid:f47ac10b-58cc-4372-a567-0e02b2c3d479": {
+  "flowfield": "Moss Flow",
+  "voronoi": "Moss Mosaic",
+  "geometric": "Moss Facets",
+  "ascii": "Moss Glyphs",
+  "mandala": "Moss Bloom",
+  "wave": "Moss Tide"
+ },
+ "1111111111111111111111111111111111111111111111111111111111111111": {
+  "flowfield": "Citrine Flow",
+  "voronoi": "Citrine Mosaic",
+  "geometric": "Citrine Facets",
+  "ascii": "Citrine Glyphs",
+  "mandala": "Citrine Bloom",
+  "wave": "Citrine Tide"
+ }
+}

@@ -7,5 +7,6 @@ export async function POST(req: NextRequest) {
 
   // Derive origin from the incoming request — works in any environment
   const origin = new URL(req.url).origin
-  return NextResponse.redirect(new URL('/', origin))
+  // 303 so the browser follows with GET (the default 307 would replay the POST)
+  return NextResponse.redirect(new URL('/', origin), 303)
 }
