@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 export const metadata = {
+  alternates: { canonical: '/terms' },
   title: 'Terms of Service — UUIDWalls',
   description: 'Terms of Service for UUIDWalls by KJR Labs.',
 }

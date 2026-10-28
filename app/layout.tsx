@@ -1,17 +1,19 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { siteUrl } from '@/lib/site'
 
+export const viewport: Viewport = { themeColor: '#0b0a09', colorScheme: 'dark' }
+
 export const metadata: Metadata = {
+  applicationName: 'UUID Walls',
   title: 'UUIDWalls — Turn Your Device UUID Into a Unique Generative Wallpaper',
   description: 'UUIDWalls converts your device UUID into a one-of-a-kind generative wallpaper. Deterministic, private, and works on Mac, Windows, Linux, iPhone, and Android.',
   metadataBase: new URL(siteUrl()),
   openGraph: {
     title: 'UUIDWalls — Your Device Has a Face',
     description: 'Every device carries a UUID shared with no machine on earth. We render it into a generative wallpaper that is yours permanently.',
-    images: ['/og-image.jpg'],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'A generative wallpaper made from a device UUID' }],
     type: 'website',
-    url: 'https://uuidwalls.vercel.app',
     siteName: 'UUIDWalls',
   },
   twitter: {

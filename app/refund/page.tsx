@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 export const metadata = {
+  alternates: { canonical: '/refund' },
   title: 'Refund Policy — UUIDWalls',
   description: 'Refund Policy for UUIDWalls by KJR Labs.',
 }

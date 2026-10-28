@@ -9,11 +9,15 @@ import Gallery from '@/components/sections/Gallery'
 import HowItWorks from '@/components/sections/HowItWorks'
 import Pricing from '@/components/sections/Pricing'
 import Showcase from '@/components/sections/Showcase'
+import { faqPageLd, jsonLd, webApplicationLd } from '@/lib/seo'
+import { siteUrl } from '@/lib/site'
 
 /** The whole page. `initialToken` opens a shared wall (/w/<token>) instead of the default one. */
 export default function HomeContent({ initialToken }: { initialToken?: string }) {
   return (
     <StudioProvider initialToken={initialToken}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(webApplicationLd(siteUrl())) }} />
+      {!initialToken && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(faqPageLd()) }} />}
       <Nav />
       <Hero />
       <HowItWorks />
