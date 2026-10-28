@@ -19,3 +19,15 @@ describe.skipIf(!process.env.GEN_GOLDENS)('generate v2 flow field goldens', () =
     writeFileSync(new URL('./golden/v2-flowfield.json', import.meta.url), JSON.stringify(out, null, 1) + '\n')
   })
 })
+
+// Wall names are new in v2 (SPEC section 13). Pinned so a refactor cannot rename anyone's walls:
+//   GEN_GOLDENS=1 npx vitest run tests/golden.gen.v2.test.ts
+describe.skipIf(!process.env.GEN_GOLDENS)('generate wall name goldens', () => {
+  it('writes tests/golden/names.json', async () => {
+    const { wallName } = await import('@/lib/wall/name')
+    const { FAMILIES, PARAM_INPUTS } = await import('./helpers/fixtures')
+    const out: Record<string, Record<string, string>> = {}
+    for (const u of PARAM_INPUTS) { out[u] = {}; for (const f of FAMILIES) out[u][f] = wallName(parseUUID(u, f)) }
+    writeFileSync(new URL('./golden/names.json', import.meta.url), JSON.stringify(out, null, 1) + '\n')
+  })
+})
