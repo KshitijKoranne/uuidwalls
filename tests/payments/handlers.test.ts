@@ -45,6 +45,14 @@ describe('POST /api/checkout', () => {
   })
 })
 
+describe('missing NEXT_PUBLIC_APP_URL', () => {
+  it('checkout and return answer 503 instead of throwing', async () => {
+    expect((await handleCheckout(post(), deps({ env: {} }))).status).toBe(503)
+    const r = await handleReturn(new Request(`${APP}/api/checkout/return`), { env: {}, provider: () => fakeProvider(), grant: async () => ({ ok: true }) })
+    expect(r.status).toBe(503)
+  })
+})
+
 describe('GET /api/checkout/return', () => {
   const run = (provider: PaymentProvider, grant = async () => ({ ok: true })) =>
     handleReturn(new Request(`${APP}/api/checkout/return`), { env: { NEXT_PUBLIC_APP_URL: APP }, provider: () => provider, grant })

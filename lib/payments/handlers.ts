@@ -8,6 +8,7 @@ import { InvalidWebhookError, PaymentsDisabledError, type PaidFact, type Payment
 type Env = Record<string, string | undefined>
 const factOf = ({ userId, providerRef, paymentId }: PaidFact): PaidFact => ({ userId, providerRef, paymentId })
 const redirectTo = (appUrl: string, payment: 'success' | 'cancelled' | 'error') => NextResponse.redirect(`${appUrl}/?payment=${payment}`)
+const misconfigured = () => new Response('Server misconfigured: NEXT_PUBLIC_APP_URL is not set', { status: 503 })
 
 export interface CheckoutDeps {
   env: Env
@@ -20,6 +21,7 @@ export interface CheckoutDeps {
 /** POST /api/checkout: signed-in user, same-origin only, rate limited. Returns { url } or { alreadyPaid }. */
 export async function handleCheckout(req: Request, d: CheckoutDeps): Promise<Response> {
   const appUrl = appUrlFrom(d.env)
+  if (!appUrl) return misconfigured()
   const origin = req.headers.get('origin')
   if (origin && origin !== appUrl) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
@@ -51,6 +53,7 @@ export interface ReturnDeps {
 /** GET /api/checkout/return: where the hosted payment page sends the browser back to. */
 export async function handleReturn(req: Request, d: ReturnDeps): Promise<Response> {
   const appUrl = appUrlFrom(d.env)
+  if (!appUrl) return misconfigured()
   try {
     const r = await d.provider().handleReturn(req)
     if (r.status === 'cancelled') return redirectTo(appUrl, 'cancelled')
