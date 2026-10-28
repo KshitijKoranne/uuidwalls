@@ -60,7 +60,7 @@ export default function UnlockDialog() {
   const title = step === 'confirming' ? 'Confirming your payment…' : step === 'success' ? '✓ 2K & 4K unlocked' : step === 'pending' ? 'Still confirming' : step === 'cancelled' ? 'Payment cancelled' : step === 'error' ? 'Something went wrong' : step === 'signin' ? 'Sign in to unlock 2K & 4K' : step === 'pay' ? 'Pay once, keep 2K & 4K' : 'Unlock 2K & 4K'
 
   return (
-    <Dialog onClose={s.closeDialog} labelledBy={id}>
+    <Dialog onClose={s.closeDialog} labelledBy={id} locked={paying || step === 'confirming'}>
       {showSteps && <div className="steps" role="img" aria-label={`Step ${stepNo} of 3`}>{[1, 2, 3].map(n => <i key={n} className={n <= stepNo ? 'on' : ''} />)}</div>}
       <h2 id={id} className={step === 'success' ? 'success-title' : undefined}>{title}</h2>
 

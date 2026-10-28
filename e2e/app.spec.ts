@@ -208,3 +208,20 @@ test('first paint is quick: a coarse picture of the wall shows while the sharp o
   await stagePainted(page)
   await expect(page.getByRole('status').filter({ hasText: 'Ready' })).toBeVisible()
 })
+
+test('a toast shown while a dialog is open is on top of it and can be clicked (not hidden under the modal)', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Find my UUID' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Find my UUID' })
+  await dialog.getByRole('button', { name: 'Copy' }).click()
+  const toast = dialog.locator('.toast') // a modal makes the page behind inert, so the dialog carries its own toast
+  await expect(toast).toContainText('Command copied')
+  await expect(page.locator('#toast')).toBeHidden() // the page's copy steps aside: one live region only
+  const topmost = await page.evaluate(() => {
+    const r = document.querySelector('dialog .toast')!.getBoundingClientRect()
+    const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+    return !!el?.closest('.toast')
+  })
+  expect(topmost).toBe(true)
+})

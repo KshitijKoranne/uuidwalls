@@ -3,7 +3,7 @@
 import { createContext, useContext } from 'react'
 import type { User } from '@supabase/supabase-js'
 import type { useLibrary } from '@/hooks/useLibrary'
-import type { ToastOptions } from '@/hooks/useToast'
+import type { ToastOptions, ToastState } from '@/hooks/useToast'
 import type { DlSizeKey } from '@/lib/payments/catalog'
 import type { SavedWall } from '@/lib/library/types'
 import type { UUIDParams } from '@/lib/wall'
@@ -80,6 +80,9 @@ export interface Studio {
   shareOnX(): void
   // misc
   showToast(text: string, opts?: ToastOptions): void
+  /** For modal dialogs: they render the toast inside themselves (a modal makes the page behind inert). */
+  toastView: { toast: ToastState; hover(over: boolean): void; dismiss(): void }
+  modalOpened(delta: 1 | -1): void
 }
 
 export const StudioContext = createContext<Studio | null>(null)

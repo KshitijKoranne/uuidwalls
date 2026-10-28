@@ -70,6 +70,7 @@ export default function StudioProvider({ children }: { children: ReactNode }) {
   const [resizeTick, setResizeTick] = useState(0)
   const [retryTick, setRetryTick] = useState(0)
   const [nudgeDismissed, setNudgeDismissed] = useState(true)
+  const [modals, setModals] = useState(0)
   const dlCtl = useRef<AbortController | null>(null)
 
   const { toast, show: showToast, update: updateToast, hide: hideToast, pause: pauseToast } = useToast()
@@ -272,6 +273,8 @@ export default function StudioProvider({ children }: { children: ReactNode }) {
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`, '_blank', 'noopener')
   }, [getShareLinks, name])
 
+  const modalOpened = useCallback((d: 1 | -1) => setModals(n => n + d), [])
+
   const signOut = useCallback(async () => {
     try { await fetch('/auth/signout', { method: 'POST' }); window.location.href = '/' } catch { showToast('Couldn’t sign out. Try again.', { error: true }) }
   }, [showToast])
@@ -301,15 +304,16 @@ export default function StudioProvider({ children }: { children: ReactNode }) {
     library, saved, toggleSave, syncNudge, dismissSyncNudge,
     user, isPaid, authChecked: auth.authChecked, accountsEnabled: ACCOUNTS_ENABLED, signOut, confirmPaid: auth.confirmPaid, markPaid,
     dialog, openDialog, closeDialog, getShareLinks, copyShareLink, shareOnX, showToast,
+    toastView: { toast, hover: pauseToast, dismiss: hideToast }, modalOpened,
     // eslint-disable-next-line react-hooks/exhaustive-deps -- renderInfo is derived from the listed render fields
   }), [uuid, family, P, token, name, seedKind, shared, renderState, progress, busyShown, previewMode, panelOpen, heroGone, hintVisible, setSeed, selectFamily, stepFamily, randomize, loadWall, loadToken, retryRender, backToWalls,
     size, chooseSize, download, downloading, cancelDownload, wmEnabled, toggleWatermark, dimScreen, library, saved, toggleSave, syncNudge, dismissSyncNudge,
-    user, isPaid, auth.authChecked, auth.confirmPaid, signOut, markPaid, dialog, openDialog, closeDialog, getShareLinks, copyShareLink, shareOnX, showToast])
+    user, isPaid, auth.authChecked, auth.confirmPaid, signOut, markPaid, dialog, openDialog, closeDialog, getShareLinks, copyShareLink, shareOnX, showToast, toast, pauseToast, hideToast, modalOpened])
 
   return (
     <StudioContext.Provider value={value}>
       {children}
-      <Toast toast={toast} onHover={pauseToast} onDismiss={hideToast} />
+      <Toast id="toast" toast={toast} onHover={pauseToast} onDismiss={hideToast} hidden={modals > 0} />
       {dialog?.kind === 'find' && <FindDialog />}
       {dialog?.kind === 'share' && <ShareDialog />}
       {dialog?.kind === 'signin' && <SigninDialog />}

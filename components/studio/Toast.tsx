@@ -1,10 +1,17 @@
 import type { ToastState } from '@/hooks/useToast'
 
-export default function Toast({ toast, onHover, onDismiss }: { toast: ToastState; onHover: (over: boolean) => void; onDismiss: () => void }) {
+/**
+ * The toast (SPEC 7.7). The page renders one, and every open modal dialog renders its own copy INSIDE itself:
+ * a modal <dialog> makes everything outside it inert (and covers it), so a toast outside could not be clicked
+ * (an Undo, a Cancel). While a modal is open the page's copy is hidden, so there is only ever one live region.
+ */
+export default function Toast({ toast, onHover, onDismiss, hidden = false, id }: { toast: ToastState; onHover: (over: boolean) => void; onDismiss: () => void; hidden?: boolean; id?: string }) {
   return (
     <div
-      id="toast"
+      id={id}
       className={`toast${toast.visible ? ' show' : ''}`}
+      style={hidden ? { visibility: 'hidden' } : undefined}
+      aria-hidden={hidden || undefined}
       role={toast.error ? 'alert' : 'status'}
       aria-live={toast.error ? 'assertive' : 'polite'}
       onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}
