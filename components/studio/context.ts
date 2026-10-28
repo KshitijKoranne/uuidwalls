@@ -29,6 +29,11 @@ export interface Studio {
   loadWall(uuid: string, fam: string): void
   toggleWatermark(): void
   download(size: DlSizeKey): void
+  /** True when the wall came from a shared link (/w/<token>): there is no UUID, only its look. */
+  sharedWall: boolean
+  // sharing
+  getShareLinks(): { privateUrl: string; rawUrl: string | null }
+  copyShareLink(kind: 'private' | 'raw'): Promise<void>
   // misc
   showToast(msg: string, ms?: number): void
   shareOnX(): void

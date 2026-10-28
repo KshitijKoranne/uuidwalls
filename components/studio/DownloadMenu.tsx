@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId } from 'react'
+import { useDisclosure } from '@/hooks/useDisclosure'
 import { PRICE, isPaidSize, type DlSizeKey } from '@/lib/payments/catalog'
 import { useStudio } from './context'
 
@@ -12,20 +13,9 @@ const ghostBtn = { display: 'flex', alignItems: 'center', gap: 6, background: 't
  */
 export default function DownloadMenu() {
   const s = useStudio()
-  const [open, setOpen] = useState(false)
-  const root = useRef<HTMLDivElement>(null)
-  const trigger = useRef<HTMLButtonElement>(null)
+  const { open, setOpen, root, trigger } = useDisclosure()
   const panelId = useId()
 
-  useEffect(() => {
-    if (!open) return
-    const onPointer = (e: Event) => { if (root.current && !root.current.contains(e.target as Node)) setOpen(false) }
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); trigger.current?.focus() } }
-    document.addEventListener('pointerdown', onPointer)
-    document.addEventListener('focusin', onPointer)
-    document.addEventListener('keydown', onKey)
-    return () => { document.removeEventListener('pointerdown', onPointer); document.removeEventListener('focusin', onPointer); document.removeEventListener('keydown', onKey) }
-  }, [open])
 
   const options: Array<{ key: DlSizeKey; label: string; dim: string }> = [
     { key: 'screen', label: 'Screen resolution', dim: s.dimScreen },

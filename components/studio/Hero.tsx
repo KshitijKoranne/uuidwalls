@@ -3,6 +3,7 @@
 import { FAMS, FAM_LABEL } from '@/lib/wall'
 import { useStudio } from './context'
 import DownloadMenu from './DownloadMenu'
+import ShareMenu from './ShareMenu'
 import WallCanvas from './WallCanvas'
 
 const ghostBtn = { display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: '1px solid var(--p15)', borderRadius: 'var(--r6)', padding: '7px 13px', fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--p55)', cursor: 'pointer' } as const
@@ -50,7 +51,7 @@ export default function Hero() {
             <input
               value={s.uuid}
               onChange={e => s.onUuidInput(e.target.value)}
-              placeholder="Enter your device UUID…"
+              placeholder={s.sharedWall ? 'Shared wall · enter your own UUID…' : 'Enter your device UUID…'}
               aria-label="Device UUID"
               spellCheck={false}
               autoComplete="off"
@@ -70,6 +71,7 @@ export default function Hero() {
               <button onClick={s.getMyUUID} style={{ ...ghostBtn, letterSpacing: '0.05em' }}>Get my UUID</button>
               <button onClick={s.toggleWatermark} aria-pressed={s.wmEnabled} style={ghostBtn}>Watermark: {s.wmEnabled ? 'On' : 'Off'}</button>
 
+              <ShareMenu />
               <DownloadMenu />
             </div>
           </div>
