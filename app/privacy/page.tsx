@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p>
-          Last updated: April 2026
+          Last updated: October 2026
         </p>
 
         <div>
@@ -38,6 +38,8 @@ export default function PrivacyPage() {
               <li><strong>Account data</strong> — your email address and a unique user ID, obtained when you sign in via Google OAuth or magic link through Supabase Auth.</li>
               <li><strong>Payment record</strong> — upon a successful purchase, we store your user ID, email, and Razorpay payment reference IDs. We never see or store your card number, UPI ID, bank account, or any other payment instrument details. All payment processing is handled entirely by Razorpay.</li>
               <li><strong>UUID input</strong> — the UUID you enter to generate a wallpaper is processed entirely in your browser. It is never transmitted to or stored on our servers.</li>
+              <li><strong>Saved walls</strong> — when you save a wall we keep its look (a short code called a wall token), not your UUID. It is stored in your browser, and in your account if you sign in. The token is derived from your UUID but does not contain it; anyone who already knows your exact UUID could confirm that a token matches it.</li>
+              <li><strong>Share links</strong> — a share link contains the wall token. When someone opens it, their browser sends the token to our server, which draws the preview image. If you choose &ldquo;Include my UUID in the link&rdquo; (off by default), the link you share contains your UUID; we do not store it.</li>
             </ul>
           </section>
 
