@@ -4,12 +4,16 @@ export class CancelledError extends Error {
 
 const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now())
 
-// A zero-delay task hop. MessageChannel avoids the 4 ms clamp setTimeout gets after a few nested
-// calls, and works both in a worker and on the main thread.
+// A zero-delay task hop that lets other work run. On the server (Node) that is setImmediate: Next's server
+// runtime does not give a MessageChannel hop that lets incoming requests in (measured: a 3 s render starved
+// every other request). In a browser or worker, MessageChannel avoids the 4 ms clamp setTimeout gets after a
+// few nested calls.
 let hop: (() => Promise<void>) | null = null
 function yieldTask(): Promise<void> {
   if (!hop) {
-    if (typeof MessageChannel !== 'undefined') {
+    if (typeof setImmediate === 'function') {
+      hop = () => new Promise<void>(res => setImmediate(res))
+    } else if (typeof MessageChannel !== 'undefined') {
       const { port1, port2 } = new MessageChannel()
       const waiting: Array<() => void> = []
       port1.onmessage = () => { waiting.shift()?.() }

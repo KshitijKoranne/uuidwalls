@@ -124,3 +124,33 @@ test.describe('share image and metadata', () => {
     expect(html).not.toContain('f47ac10b-58cc') // not even the site's default UUID: a shared page starts empty
   })
 })
+
+test.describe('share image under load', () => {
+  test.setTimeout(120_000)
+  test('a burst of distinct cards: only 2 render at once, the rest get 503 + Retry-After, and the server stays responsive', async ({ request, page }) => {
+    // Distinct Flow Field tokens (the slowest card). Forgeable tokens make a flood like this easy, so the cap must hold.
+    const tokens = Array.from({ length: 8 }, (_, i) => encodeWall(parseUUID(`${(0x10000000 + i * 7919).toString(16)}-1111-4222-8333-444444444444`, 'flowfield')))
+    const burst = Promise.all(tokens.map(async t => { const r = await request.get(`/w/${t}/og.jpg`); return { status: r.status(), retry: r.headers()['retry-after'], cache: r.headers()['cache-control'] } }))
+    await new Promise(r => setTimeout(r, 300))
+    const t0 = Date.now()
+    const res = await page.request.get('/privacy') // another request while renders are running
+    const lag = Date.now() - t0
+    const results = await burst
+    const ok = results.filter(r => r.status === 200), busy = results.filter(r => r.status === 503)
+    expect(ok.length).toBeGreaterThanOrEqual(1)
+    expect(ok.length).toBeLessThanOrEqual(2)
+    expect(busy.length).toBe(results.length - ok.length)
+    for (const b of busy) { expect(b.retry).toBe('5'); expect(b.cache).toBe('no-store') }
+    expect(res.status()).toBe(200)
+    expect(lag).toBeLessThan(1500) // v1 of the route froze the event loop for ~3.5 s per card
+  })
+
+  test('the same card twice is served from memory the second time', async ({ request }) => {
+    const t = encodeWall(parseUUID('feedface-1111-4222-8333-444444444444', 'geometric'))
+    const a = await request.get(`/w/${t}/og.jpg`)
+    const t0 = Date.now(); const b = await request.get(`/w/${t}/og.jpg`)
+    expect(a.status()).toBe(200); expect(b.status()).toBe(200)
+    expect((await a.body()).equals(await b.body())).toBe(true)
+    expect(Date.now() - t0).toBeLessThan(250)
+  })
+})

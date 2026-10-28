@@ -65,3 +65,17 @@ describe('wall token', () => {
     expect(() => encodeWall({ ...P, seed: -1 })).toThrow(/cannot be shared/)
   })
 })
+
+describe('a render from a decoded token is the same drawing as a render from the UUID', () => {
+  it('identical canvas program for 12 UUIDs x 6 families', async () => {
+    const { makeRecorder } = await import('./helpers/recorder')
+    const { drawWall } = await import('@/lib/wall/render')
+    const { RENDER_UUIDS } = await import('./helpers/fixtures')
+    for (const u of RENDER_UUIDS) for (const fam of FAMS) {
+      const direct = makeRecorder(), viaToken = makeRecorder()
+      await drawWall(direct.ctx, parseUUID(u, fam), 160, 90, { hq: true })
+      await drawWall(viaToken.ctx, decodeWall(encodeWall(parseUUID(u, fam)))!, 160, 90, { hq: true })
+      expect(viaToken.digest(), `${u} ${fam}`).toBe(direct.digest())
+    }
+  })
+})

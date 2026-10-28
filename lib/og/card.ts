@@ -2,6 +2,7 @@ import path from 'node:path'
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas'
 import { FAM_LABEL } from '@/lib/wall/constants'
 import { drawWall } from '@/lib/wall/render'
+import { makeCheckpoint } from '@/lib/wall/scheduling'
 import type { Ctx2D, UUIDParams } from '@/lib/wall/types'
 
 // Server-side share card: the wall drawn by the same engine as the browser (on a Skia canvas), plus a
@@ -22,7 +23,15 @@ export async function renderCardJpeg(P: UUIDParams): Promise<Buffer> {
   ensureFonts()
   const canvas = createCanvas(CARD_WIDTH, CARD_HEIGHT)
   const ctx = canvas.getContext('2d')
-  await drawWall(ctx as unknown as Ctx2D, P, CARD_WIDTH, CARD_HEIGHT, { hq: true })
+  // The checkpoint hands the event loop back every few milliseconds, so one slow card cannot freeze the
+  // server. Skia (behind @napi-rs/canvas) records drawing and rasterises it in one go; left alone, that one
+  // go is a 1.5 s stall for a Flow Field card. Reading one pixel forces the pending work to run now, so it
+  // is spread over every column (longest stall about 35 ms, about 0.7 s more in total). Drawing is unchanged.
+  const yieldNow = makeCheckpoint({ isCancelled: () => false })
+  await drawWall(ctx as unknown as Ctx2D, P, CARD_WIDTH, CARD_HEIGHT, {
+    hq: true,
+    checkpoint: async ratio => { ctx.getImageData(0, 0, 1, 1); await yieldNow(ratio) },
+  })
 
   const scrim = ctx.createLinearGradient(0, CARD_HEIGHT - 190, 0, CARD_HEIGHT)
   scrim.addColorStop(0, 'rgba(10,9,8,0)'); scrim.addColorStop(1, 'rgba(10,9,8,0.88)')
@@ -35,5 +44,6 @@ export async function renderCardJpeg(P: UUIDParams): Promise<Buffer> {
   ctx.fillText(`${FAM_LABEL[P.family] ?? P.family} · made from a device UUID`, 56, CARD_HEIGHT - 44)
   ctx.textAlign = 'right'; ctx.fillText('uuidwalls.vercel.app', CARD_WIDTH - 56, CARD_HEIGHT - 44)
 
-  return canvas.toBuffer('image/jpeg', 82)
+  // encode() runs on the thread pool; toBuffer() would block the event loop for about half a second
+  return canvas.encode('jpeg', 82)
 }

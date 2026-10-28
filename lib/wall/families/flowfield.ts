@@ -37,8 +37,10 @@ export async function drawFlowField(ctx: Ctx2D, P: UUIDParams, w: number, h: num
         }
         ctx.stroke()
       }
+      // After every column, not only every 12: a column is cheap enough to yield on, and the checkpoint
+      // makes no canvas calls, so the drawing program (and the goldens) are unchanged.
+      await o.checkpoint?.((i + 1) / xs.length)
     }
     ctx.globalAlpha = 1; xi = end
-    await o.checkpoint?.(xi / xs.length)
   }
 }

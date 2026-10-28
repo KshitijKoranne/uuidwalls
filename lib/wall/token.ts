@@ -5,9 +5,15 @@ import type { FamilyId, UUIDParams } from './types'
 // can be shared (and a social preview image rendered on the server) WITHOUT the device UUID.
 //
 // What it contains: family, hue, saturation, two lightness values, accent hue, density, angle, mood
-// and the 32-bit seed (an FNV-1a hash of the UUID). The UUID is not recoverable from it (122 random
-// bits against a 32-bit hash and lossy fields), but it is not "nothing": the token fully describes
-// the wall, which is the point.
+// and the 32-bit seed (an FNV-1a hash of the UUID).
+//
+// Be honest about what that is. The link does not CONTAIN the UUID, and nobody can read it back out
+// of the token, but it is not anonymous: the token fixes the seed and the residue of each field the
+// UUID was sliced into, so it narrows the UUID to a tiny fraction of all UUIDs. Anyone who already
+// holds a candidate UUID can confirm it matches instantly, tokens made from the same UUID are linkable
+// to each other (they differ only in the family and checksum characters), and the server sees the
+// token whenever someone opens a link. The checksum is an error check, not a signature: anyone can
+// mint valid tokens. So say "the link does not include your UUID", never "your UUID cannot be derived".
 //
 // Layout (107 bits, shifted to 108 = 18 x 6 bits), most significant first:
 //   version 4 | family 3 | hue 9 | sat-50 6 | lum1-55 5 | lum2-14 5 | accent 9 | density 10 | angle 9 | mood 7 | seed 32 | checksum 8
