@@ -36,7 +36,7 @@ export default function Cta() {
             Generate my wall
           </button>
           <button onClick={shareOnX} style={{ background: 'transparent', color: 'var(--soft)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', padding: '16px 24px', fontFamily: 'var(--font)', fontSize: '15px', fontWeight: 400, cursor: 'pointer' }}>
-            Share on X
+            Post on X
           </button>
         </div>
       </div>
