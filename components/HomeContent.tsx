@@ -1,36 +1,24 @@
-import Hero from '@/components/studio/Hero'
-import TopBar from '@/components/studio/TopBar'
-import StudioProvider from '@/components/studio/StudioProvider'
-import Cta from '@/components/sections/Cta'
 import Explore from '@/components/sections/Explore'
 import Faq from '@/components/sections/Faq'
-import Footer from '@/components/sections/Footer'
-import Gallery from '@/components/sections/Gallery'
+import FourK from '@/components/sections/FourK'
 import HowItWorks from '@/components/sections/HowItWorks'
-import Pricing from '@/components/sections/Pricing'
-import Showcase from '@/components/sections/Showcase'
+import Stage from '@/components/studio/Stage'
 import { faqPageLd, jsonLd, webApplicationLd } from '@/lib/seo'
 import { siteUrl } from '@/lib/site'
 
-/** The whole page. `initialToken` opens a shared wall (/w/<token>) instead of the default one. */
-export default function HomeContent({ initialToken }: { initialToken?: string }) {
+/** The studio page: stage and panel, then the short story sections. The same page serves /w/<token>. */
+export default function HomeContent({ shared }: { shared?: boolean }) {
   return (
-    <StudioProvider initialToken={initialToken}>
+    <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(webApplicationLd(siteUrl())) }} />
-      {!initialToken && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(faqPageLd()) }} />}
-      <a className="skip" href="#main">Skip to content</a>
-      <TopBar />
+      {!shared && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(faqPageLd()) }} />}
       <main id="main" tabIndex={-1}>
-      <Hero />
-      <HowItWorks />
-      <Showcase />
-      <Gallery />
-      <Explore />
-      <Pricing />
-      <Faq />
-      <Cta />
+        <Stage />
+        <HowItWorks />
+        <Explore />
+        <FourK />
+        <Faq />
       </main>
-      <Footer />
-    </StudioProvider>
+    </>
   )
 }

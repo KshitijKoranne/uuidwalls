@@ -42,7 +42,7 @@ export function useAuth() {
     if (!supabase) return false
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return false
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < 5; attempt++) { // SPEC 8.4: every 2 s, up to 5 times
       if (await fetchPaid(user.id)) { setIsPaid(true); return true }
       await new Promise(r => setTimeout(r, 2000))
     }

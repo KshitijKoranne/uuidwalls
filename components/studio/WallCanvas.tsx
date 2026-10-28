@@ -1,9 +1,15 @@
 'use client'
 
+import { FAM_LABEL } from '@/lib/wall'
 import { useStudio } from './context'
 
-/** The full-bleed hero canvas. The provider owns the element and renders into it from a worker. */
+/** The stage canvas. A callback ref hands the element to the provider, which draws into it from a worker. */
 export default function WallCanvas() {
-  const { attachWallCanvas } = useStudio()
-  return <canvas ref={attachWallCanvas} role="img" aria-label="Generative wallpaper rendered from your UUID" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />
+  const { attachWallCanvas, attachCoarseCanvas, name, family } = useStudio()
+  return (
+    <>
+      <canvas className="main" ref={attachWallCanvas} role="img" aria-label={`Wall: ${name}, ${FAM_LABEL[family]}, generated from your seed`} />
+      <canvas className="coarse" ref={attachCoarseCanvas} aria-hidden="true" />
+    </>
+  )
 }

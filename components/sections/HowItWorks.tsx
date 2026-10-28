@@ -1,27 +1,13 @@
-import { Eyebrow, H2, Lead } from './SectionHead'
-
-const STEPS = [
-  { n: '01', h: 'Find your UUID', p: 'Every device has one. Mac, Windows, Linux, iPhone, Android — each carries a UUID that is cryptographically unique.' },
-  { n: '02', h: 'Enter & render', p: 'Paste it in. The algorithm maps every hex character to visual parameters — hue, density, angle, pattern family.' },
-  { n: '03', h: 'Pick your pattern', p: 'Six families: Flow Field, Voronoi, Geometric, ASCII, Mandala, Wave. Same UUID, six different faces.' },
-  { n: '04', h: 'Download your wall', p: 'Screen, mobile, 2K, or 4K. Renders locally — your UUID never leaves your browser.' },
-]
-
 export default function HowItWorks() {
   return (
-    <section style={{ padding: '7rem 1.5rem', background: 'var(--surface-1)' }}>
-      <div style={{ maxWidth: 960, margin: '0 auto' }}>
-        <Eyebrow>How it works</Eyebrow>
-        <H2>Mathematically yours.</H2>
-        <Lead>Your UUID is not random to us — it is the seed. Same input, same output. Always.</Lead>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 1, background: 'var(--line)', border: '1px solid var(--line)', borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>
-          {STEPS.map(s => (
-            <div key={s.n} style={{ background: 'var(--surface-1)', padding: '2.25rem 1.75rem' }}>
-              <div style={{ fontFamily: 'var(--font)', fontSize: '4rem', fontWeight: 700, color: 'rgba(240,237,232,0.05)', lineHeight: 1, marginBottom: '1.25rem', letterSpacing: '-0.04em' }}>{s.n}</div>
-              <div style={{ fontFamily: 'var(--font)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.6rem' }}>{s.h}</div>
-              <div style={{ fontSize: '0.875rem', color: 'var(--soft)', lineHeight: 1.75, fontWeight: 300 }}>{s.p}</div>
-            </div>
-          ))}
+    <section className="s alt" aria-labelledby="how-h">
+      <div className="wrap">
+        <h2 className="h2" id="how-h">How it works</h2>
+        <p className="lead">Three steps. Nothing to install.</p>
+        <div className="how">
+          <article><span className="label">Step 1</span><h3>Find your UUID</h3><p>Every device has one. Tap <b>Find my UUID</b> above for the command on Mac, Windows or Linux, or where to look on a phone.</p></article>
+          <article><span className="label">Step 2</span><h3>Pick a pattern</h3><p>Six patterns, each drawn from the same seed. The picker shows all six, so you can compare.</p></article>
+          <article><span className="label">Step 3</span><h3>Download, save or share</h3><p>Save it to your device, keep it in My walls, or send a link that doesn’t include your UUID.</p></article>
         </div>
       </div>
     </section>

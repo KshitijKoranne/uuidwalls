@@ -26,5 +26,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SharedWall({ params }: Props) {
   const { token } = await params
   if (!decodeWall(token)) notFound()
-  return <HomeContent initialToken={token} />
+  return <HomeContent shared />
 }

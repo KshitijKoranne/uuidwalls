@@ -1,21 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
 import { parseUUID } from '../lib/wall/params'
+import { stageHash as heroHash, stagePainted } from './helpers'
 import { decodeWall, encodeWall } from '../lib/wall/token'
 
 const UUID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
 const tokenFor = (fam: string, uuid = UUID) => encodeWall(parseUUID(uuid, fam))
-
-async function heroHash(page: Page) {
-  await expect.poll(() => page.evaluate(() => { const c = document.querySelector<HTMLCanvasElement>('#hero canvas'); return !!c && c.width >= 1000 }), { timeout: 20_000 }).toBe(true) // 300 = not drawn yet
-  await page.waitForTimeout(300)
-  return page.evaluate(async () => {
-    const c = document.querySelector<HTMLCanvasElement>('#hero canvas')!
-    const t = document.createElement('canvas'); t.width = c.width; t.height = c.height
-    const x = t.getContext('2d')!; x.drawImage(c, 0, 0)
-    const buf = await crypto.subtle.digest('SHA-256', x.getImageData(0, 0, t.width, t.height).data)
-    return Array.from(new Uint8Array(buf)).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('')
-  })
-}
 
 function jpegSize(buf: Buffer) {
   for (let i = 2; i < buf.length - 9;) {
@@ -38,47 +27,62 @@ for (const fam of ['voronoi', 'geometric', 'flowfield']) {
   })
 }
 
-test('shared wall page: no UUID anywhere, switching family moves to that family\'s token, typing a UUID leaves shared mode', async ({ page }) => {
+test('shared wall page: no UUID anywhere, switching pattern moves to that pattern\'s token, typing a UUID leaves shared mode', async ({ page }) => {
   await page.goto(`/w/${tokenFor('geometric')}`)
-  const input = page.getByLabel('Device UUID')
+  const input = page.getByLabel('Seed', { exact: true })
   await expect(input).toHaveValue('')
-  await expect(input).toHaveAttribute('placeholder', /Shared wall/)
-  await page.getByRole('button', { name: 'Wave', exact: true }).click()
+  await expect(input).toHaveAttribute('placeholder', /hidden/)
+  await page.getByRole('radio', { name: 'Wave' }).click()
   await expect.poll(() => new URL(page.url()).pathname).toBe(`/w/${tokenFor('wave')}`)
   await input.fill('deadbeef-cafe-4abe-b00d-123456789abc')
   await expect.poll(() => new URL(page.url()).pathname, { timeout: 5000 }).toBe('/')
-  await expect.poll(() => page.url()).toContain('uuid=deadbeef')
+  await expect.poll(() => page.url()).toContain('?w=')
+  expect(page.url()).not.toContain('deadbeef')
 })
 
-test.describe('share menu', () => {
+test.describe('share dialog', () => {
   test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
   const clip = (page: Page) => page.evaluate(() => navigator.clipboard.readText())
 
-  test('default link hides the UUID; the raw link is a separate explicit choice', async ({ page }) => {
+  test('the default link hides the UUID; the raw link is a separate, collapsed, explicit choice', async ({ page }) => {
     await page.goto(`/?uuid=${UUID}&p=voronoi`)
-    await heroHash(page)
+    await stagePainted(page)
     await page.getByRole('button', { name: 'Share', exact: true }).click()
-    await page.getByRole('button', { name: /Copy link · hides your UUID/ }).click()
-    const priv = await clip(page)
-    expect(priv).toBe(`http://127.0.0.1:3100/w/${tokenFor('voronoi')}`)
-    expect(priv).not.toContain('f47ac10b')
-    await page.getByRole('button', { name: 'Share', exact: true }).click()
-    await page.getByRole('button', { name: /Copy link with my UUID/ }).click()
-    expect(await clip(page)).toBe(`http://127.0.0.1:3100/?uuid=${UUID}&p=voronoi`)
+    const dialog = page.getByRole('dialog', { name: 'Share this wall' })
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByLabel('Link', { exact: true })).toHaveValue(`http://127.0.0.1:3100/w/${tokenFor('voronoi')}`)
+    await dialog.getByRole('button', { name: 'Copy link' }).first().click()
+    expect(await clip(page)).toBe(`http://127.0.0.1:3100/w/${tokenFor('voronoi')}`)
+    expect(await clip(page)).not.toContain('f47ac10b')
+    await expect(dialog.getByText('The link doesn’t include your UUID.')).toBeVisible()
+    await dialog.getByText('Advanced').click()
+    await dialog.getByRole('switch', { name: 'Include my UUID in the link' }).click()
+    await expect(dialog.getByLabel('Link', { exact: true })).toHaveValue(`http://127.0.0.1:3100/?uuid=${UUID}&p=voronoi`)
+    await expect(dialog.getByText('This link contains your UUID.')).toBeVisible()
   })
 
   test('on a shared wall the raw-UUID option does not exist (there is no UUID to share)', async ({ page }) => {
     await page.goto(`/w/${tokenFor('wave')}`)
     await page.getByRole('button', { name: 'Share', exact: true }).click()
-    await expect(page.getByRole('button', { name: /Copy link · hides your UUID/ })).toBeVisible()
-    await expect(page.getByRole('button', { name: /with my UUID/ })).toHaveCount(0)
+    const dialog = page.getByRole('dialog', { name: 'Share this wall' })
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByText('Advanced')).toHaveCount(0)
+    await expect(dialog.getByLabel('Link', { exact: true })).toHaveValue(`http://127.0.0.1:3100/w/${tokenFor('wave')}`)
   })
 
-  test('Esc closes the menu and returns focus to Share', async ({ page }) => {
+  test('Esc closes the dialog and focus returns to Share', async ({ page }) => {
     await page.goto('/')
     const share = page.getByRole('button', { name: 'Share', exact: true })
     await share.click(); await page.keyboard.press('Escape')
-    await expect(share).toHaveAttribute('aria-expanded', 'false'); await expect(share).toBeFocused()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(share).toBeFocused()
+  })
+
+  test('the card in the dialog is the real per-wall image', async ({ page }) => {
+    await page.goto(`/w/${tokenFor('geometric')}`)
+    await page.getByRole('button', { name: 'Share', exact: true }).click()
+    await expect(page.getByRole('dialog').locator('img')).toHaveAttribute('src', `/w/${tokenFor('geometric')}/og.jpg`)
+    await expect.poll(() => page.getByRole('dialog').locator('img').evaluate((i: HTMLImageElement) => i.naturalWidth)).toBe(1200)
   })
 })
 

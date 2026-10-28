@@ -19,7 +19,7 @@ test('home: FAQPage JSON-LD matches the visible FAQ; WebApplication present; can
   const blocks = await page.$$eval('script[type="application/ld+json"]', els => els.map(e => JSON.parse(e.textContent || '{}')))
   const faq = blocks.find(b => b['@type'] === 'FAQPage')
   expect(blocks.some(b => b['@type'] === 'WebApplication')).toBe(true)
-  const visible = await page.$$eval('section h3', els => els.map(e => e.textContent?.trim()))
+  const visible = await page.$$eval('summary', els => els.map(e => e.textContent?.trim()))
   for (const e of faq.mainEntity) expect(visible).toContain(e.name)
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /^https?:\/\/[^/]+\/?$/)
 })
