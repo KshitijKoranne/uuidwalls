@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // Native canvas for the per-wall share image; its font file must ship with that route's function.
+  serverExternalPackages: ['@napi-rs/canvas'],
+  outputFileTracingIncludes: { '/w/[token]/og.jpg': ['./public/fonts/**/*'] },
   async headers() {
     return [
       {

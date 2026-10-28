@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'UUIDWalls — Turn Your Device UUID Into a Unique Generative Wallpaper',
   description: 'UUIDWalls converts your device UUID into a one-of-a-kind generative wallpaper. Deterministic, private, and works on Mac, Windows, Linux, iPhone, and Android.',
-  metadataBase: new URL('https://uuidwalls.vercel.app'),
+  metadataBase: new URL(siteUrl()),
   openGraph: {
     title: 'UUIDWalls — Your Device Has a Face',
     description: 'Every device carries a UUID shared with no machine on earth. We render it into a generative wallpaper that is yours permanently.',
